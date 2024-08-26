@@ -1,5 +1,6 @@
 //using Den.Tools;
 using Firebase.Firestore;
+using Firebase.Database;
 using JetBrains.Annotations;
 using System;
 using System.Collections;
@@ -8,6 +9,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using maxprofitness.login;
 
 //This Class Is Used To Make The Storage And Manipulation Of Two Variables Easier
 [System.Serializable]
@@ -29,7 +31,7 @@ public class LocalLeaderboard : MonoBehaviour {
 
     CanvasGroup localLeaderboardCanvasGroup;
 
-    [SerializeField] LeaderboardEntry[] entries;
+    //[SerializeField] LeaderboardEntry[] entries;
     [SerializeField] TextMeshProUGUI lbGameNameTMP;
     
     // Assigned in inspector depending on the scene the leaderboard is in
@@ -421,6 +423,7 @@ public class LocalLeaderboard : MonoBehaviour {
                 return;
             }
 
+            /*
             if (!leaderboardEntryComparison.Contains(entries[i].entryName + "," + entries[i].entryScore + " ") && entries[i].entryScore != 0)
             {
                 leaderboardEntryComparison += entries[i].entryName + "," + entries[i].entryScore + " ";
@@ -430,6 +433,7 @@ public class LocalLeaderboard : MonoBehaviour {
             entries[i].entryName = collectedStats[i].name;
             entries[i].entryScore = collectedStats[i].score;
             entries[i].SetEntry();
+             */
         }
 
     } // END UpdateAirRunnerEntries
@@ -442,6 +446,7 @@ public class LocalLeaderboard : MonoBehaviour {
     public void UpdateOnlineLeaderboards()
     //----------------------------------//
     {
+        /*
         //Simply Loop Through The List And Add The Name And Score To The Display Text
         for (int i = 0; i < entries.Length && i < collectedStats.Count; i++)
         {
@@ -461,7 +466,7 @@ public class LocalLeaderboard : MonoBehaviour {
 
             //Debug.Log( "Collected Stats: " + collectedStats[i].name + " " + collectedStats[i].score);
         }
-        
+        */
         //Debug.Log(leaderboardEntryComparison);
         //Debug.Log("LocalLeaderboard.cs // UpdateLeaderBoardVisual()// Finished setting data loop");
 
@@ -677,6 +682,7 @@ public class LocalLeaderboard : MonoBehaviour {
     public void AirRunnerLeaderboardSetup()
     //------------------------------------//
     {
+#if AIR_RUNNER
         switch (AirRunnerGameManager.selectedLevel.gameID)
         {
             case 3:
@@ -699,6 +705,7 @@ public class LocalLeaderboard : MonoBehaviour {
                 LoadHillsLeaderboardsInGame();
                 break;
         }
+#endif
     }
 
 
@@ -861,7 +868,7 @@ public class LocalLeaderboard : MonoBehaviour {
     // END LoadLeaderboard
 
 
-    #endregion
+#endregion
 
 
     #region CLEAR LEADERBOARDS/PREFS

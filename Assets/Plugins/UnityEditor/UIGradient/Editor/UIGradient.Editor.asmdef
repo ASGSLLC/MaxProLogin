@@ -1,0 +1,16 @@
+{
+    "name": "UIGradient.Editor",
+    "references": [
+        "GUID:348961a634c5ff048b62b91feb7f24f8"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

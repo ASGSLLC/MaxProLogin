@@ -1,0 +1,16 @@
+{
+    "name": "ProceduralUIImage.Editor",
+    "references": [
+        "GUID:5cb53fec1371313408e9bf94c1c1cdda"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

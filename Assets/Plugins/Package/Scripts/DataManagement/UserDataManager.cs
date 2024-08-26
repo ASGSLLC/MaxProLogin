@@ -26,141 +26,144 @@ using UnityEditor.PackageManager;
 //using Sirenix.Utilities;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using maxprofitness.login;
 
-public class UserDataManager : Singleton<UserDataManager>
+namespace maxprofitness.login 
 {
-    #region VARIABLES
+    public class UserDataManager : Singleton<UserDataManager>
+    {
+        #region VARIABLES
 
 #if ROWING_CANOE
     public RowingTrackManager rowingTrackManager;
 #endif
-    public static Action OnUserDataInitialized;
+        public static Action OnUserDataInitialized;
 
-    public LocalLeaderboard localLeaderboard;
-    public string[] leaderboardEntries;
+        public LocalLeaderboard localLeaderboard;
+        public string[] leaderboardEntries;
 
-    public static UserDataMeta loadedData;
-    public static GameMetrics.AirRunnerGameMetrics airRunnerLoadedData;
-    public static GameMetrics.FitFighterGameMetrics fitFighterLoadedData;
-    public static GameMetrics.RowingCanoeGameMetrics rowingCanoeLoadedData;
+        public static UserDataMeta loadedData;
+        public static GameMetrics.AirRunnerGameMetrics airRunnerLoadedData;
+        public static GameMetrics.FitFighterGameMetrics fitFighterLoadedData;
+        public static GameMetrics.RowingCanoeGameMetrics rowingCanoeLoadedData;
 
-    private static string mobileFirebaseCollection = "maxProGamesApp";
-    private static string gameRecordsFirebaseDocument = "gameRecords";
-    private static string rowingGameCollection = "rowing";
-    private static string personalBestDocument = "personalBests";
-    private DocumentReference leaderboardRef;
+        private static string mobileFirebaseCollection = "maxProGamesApp";
+        private static string gameRecordsFirebaseDocument = "gameRecords";
+        private static string rowingGameCollection = "rowing";
+        private static string personalBestDocument = "personalBests";
+        private DocumentReference leaderboardRef;
 
-#endregion
-
-
-    #region MONOBEHAVIOURS
+        #endregion
 
 
-    //------------------//
-    private void Start()
-    //-----------------//
-    {
-        localLeaderboard = FindObjectOfType<LocalLeaderboard>();
-
-    } // END Start
+        #region MONOBEHAVIOURS
 
 
-#endregion
+        //------------------//
+        private void Start()
+        //-----------------//
+        {
+            localLeaderboard = FindObjectOfType<LocalLeaderboard>();
+
+        } // END Start
 
 
-    #region INITIALIZE USER DATA
+        #endregion
 
 
-    //----------------------------------//
-    public void InitializeUserData(Action<DocumentSnapshot> OnSuccess, Action<string> OnError)
-    //----------------------------------//
-    {
-        Debug.Log("AppManager//InitializeUserData// ");
+        #region INITIALIZE USER DATA
+
+
+        //----------------------------------//
+        public void InitializeUserData(Action<DocumentSnapshot> OnSuccess, Action<string> OnError)
+        //----------------------------------//
+        {
+            Debug.Log("AppManager//InitializeUserData// ");
 
 #if !FIREBASE_STORAGE
-        FirestoreDatabaseManager.Instance.CheckDependecies(() =>
-        {
-            if (FirestoreDatabaseManager.db == null)
+            FirestoreDatabaseManager.Instance.CheckDependecies(() =>
             {
-                Debug.Log("AppManager//InitializeUserData// db null");
-            }
-            else
-            {
-                Debug.Log("AppManager//InitializeUserData// db");
-            }
-
-            DocumentReference usersRef = FirestoreDatabaseManager.db.Collection("users").Document(AuthenticationManager.Instance.user.UserId);
-
-            OnSuccess += (document) =>
-            {
-                if (document.Exists == false)
+                if (FirestoreDatabaseManager.db == null)
                 {
-                    Debug.Log("UserDataManager//InitializeUserData// dont have document");
-
-                    FirstTimeUserUpload();
+                    Debug.Log("AppManager//InitializeUserData// db null");
                 }
-                else 
+                else
                 {
-                    Debug.Log("UserDataManager//InitializeUserData// have document");
-                    
-                    ReadUserDocument(document);
+                    Debug.Log("AppManager//InitializeUserData// db");
                 }
-            };
 
-            // Download the users data
-            FirestoreDatabaseManager.Instance.GetDocument(usersRef, OnSuccess, OnError);
-           
-        });
+                DocumentReference usersRef = FirestoreDatabaseManager.db.Collection("users").Document(AuthenticationManager.Instance.user.UserId);
+
+                OnSuccess += (document) =>
+                {
+                    if (document.Exists == false)
+                    {
+                        Debug.Log("UserDataManager//InitializeUserData// dont have document");
+
+                        FirstTimeUserUpload();
+                    }
+                    else
+                    {
+                        Debug.Log("UserDataManager//InitializeUserData// have document");
+
+                        ReadUserDocument(document);
+                    }
+                };
+
+                // Download the users data
+                FirestoreDatabaseManager.Instance.GetDocument(usersRef, OnSuccess, OnError);
+
+            });
 #endif
 
-    } // END InitializeUserData
+        } // END InitializeUserData
 
 
-#endregion
+        #endregion
 
 
-    #region FIRST TIME USER UPLOAD
+        #region FIRST TIME USER UPLOAD
 
 
-    //-----------------------------------//
-    public static void FirstTimeUserUpload()
-    //-----------------------------------//
-    {
-        string userJson = JsonUtility.ToJson(loadedData);
+        //-----------------------------------//
+        public static void FirstTimeUserUpload()
+        //-----------------------------------//
+        {
+            string userJson = JsonUtility.ToJson(loadedData);
 
-        Debug.Log("UserData//UpdateUserData//userJson " + userJson);
+            Debug.Log("UserData//UpdateUserData//userJson " + userJson);
 
-        UserDataMeta userMetadata = new UserDataMeta();
-        userMetadata.birthday = UserEnteredData.GetBirthday();
-        userMetadata.challenge = (Goal)UserEnteredData.challenge;
-        userMetadata.country = UserEnteredData.country;
-        userMetadata.creationTime = Timestamp.FromDateTime(DateTime.Now);
-        userMetadata.displayName = UserEnteredData.displayName;
-        userMetadata.email = UserEnteredData.email;
-        userMetadata.firstName = UserEnteredData.firstName;
-        userMetadata.firstTimeInApp = true;
-        userMetadata.fitnessLevel = (FitnessLevel)UserEnteredData.fitnessLevel;
-        userMetadata.gender = (Gender)UserEnteredData.gender;
-        userMetadata.height = UserEnteredData.height;
-        FeetInchContainer feetInchContainer = ConvertCentimetersToFeet(UserEnteredData.height);
-        userMetadata.heightFeets = feetInchContainer.feet;
-        userMetadata.heightInches = feetInchContainer.inches;
-        userMetadata.imperialMeasurement = UserEnteredData.imperialMeasurement;
-        userMetadata.instructor = "Shauna";
-        userMetadata.isGrandFathered = false;
-        userMetadata.lastLogin = System.DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-        userMetadata.lastName = UserEnteredData.lastName;
-        userMetadata.nickname = UserEnteredData.nickname;
-        userMetadata.photo = null;
-        userMetadata.photoURL = null;
-        userMetadata.photoUrl = null;
-        userMetadata.uid = AuthenticationManager.Instance.user.UserId;
-        userMetadata.weight = UserEnteredData.weight;
-        userMetadata.weightLbs = (int)SystemOfMeasurementHelper.ConvertKilogramsToPounds(UserEnteredData.weight);
-        
-        UserDataManager.loadedData = userMetadata;
+            UserDataMeta userMetadata = new UserDataMeta();
+            userMetadata.birthday = UserEnteredData.GetBirthday();
+            userMetadata.challenge = (Goal)UserEnteredData.challenge;
+            userMetadata.country = UserEnteredData.country;
+            userMetadata.creationTime = Timestamp.FromDateTime(DateTime.Now);
+            userMetadata.displayName = UserEnteredData.displayName;
+            userMetadata.email = UserEnteredData.email;
+            userMetadata.firstName = UserEnteredData.firstName;
+            userMetadata.firstTimeInApp = true;
+            userMetadata.fitnessLevel = (FitnessLevel)UserEnteredData.fitnessLevel;
+            userMetadata.gender = (Gender)UserEnteredData.gender;
+            userMetadata.height = UserEnteredData.height;
+            FeetInchContainer feetInchContainer = ConvertCentimetersToFeet(UserEnteredData.height);
+            userMetadata.heightFeets = feetInchContainer.feet;
+            userMetadata.heightInches = feetInchContainer.inches;
+            userMetadata.imperialMeasurement = UserEnteredData.imperialMeasurement;
+            userMetadata.instructor = "Shauna";
+            userMetadata.isGrandFathered = false;
+            userMetadata.lastLogin = System.DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            userMetadata.lastName = UserEnteredData.lastName;
+            userMetadata.nickname = UserEnteredData.nickname;
+            userMetadata.photo = null;
+            userMetadata.photoURL = null;
+            userMetadata.photoUrl = null;
+            userMetadata.uid = AuthenticationManager.Instance.user.UserId;
+            userMetadata.weight = UserEnteredData.weight;
+            userMetadata.weightLbs = (int)SystemOfMeasurementHelper.ConvertKilogramsToPounds(UserEnteredData.weight);
 
-        Dictionary<string, object> userData = new Dictionary<string, object>
+            UserDataManager.loadedData = userMetadata;
+
+            Dictionary<string, object> userData = new Dictionary<string, object>
         {
             { "birthday", loadedData.birthday },
             { "challenge", loadedData.challenge },
@@ -188,825 +191,829 @@ public class UserDataManager : Singleton<UserDataManager>
             { "weightLbs", loadedData.weightLbs }
         };
 
-        DocumentReference documentReference = FirestoreDatabaseManager.db.Collection("users").Document(AuthenticationManager.Instance.user.UserId);
+            DocumentReference documentReference = FirestoreDatabaseManager.db.Collection("users").Document(AuthenticationManager.Instance.user.UserId);
 
-        FirestoreDatabaseManager.Instance.SaveDocument(documentReference, userData, OnUserDataInitialized,
-        (error) =>
+            FirestoreDatabaseManager.Instance.SaveDocument(documentReference, userData, OnUserDataInitialized,
+            (error) =>
+            {
+                Debug.LogError("UserData//InitializeUserData// error " + error);
+            });
+
+        } // END FirstTimeUpload
+
+
+        #endregion
+
+
+        #region GET AIR RUNNER LEADERBOARD DATA
+
+
+        //----------------------------------//
+        public void GetAirRunnerLeaderboardData(Action<DocumentSnapshot> OnSuccess, Action<string> OnError)
+        //----------------------------------//
         {
-            Debug.LogError("UserData//InitializeUserData// error " + error);
-        });
-
-    } // END FirstTimeUpload
-
-
-#endregion
-
-
-    #region GET AIR RUNNER LEADERBOARD DATA
-
-
-    //----------------------------------//
-    public void GetAirRunnerLeaderboardData(Action<DocumentSnapshot> OnSuccess, Action<string> OnError)
-    //----------------------------------//
-    {
-        Debug.Log("UserDataManager // GetAirRunnerLeaderboardData() // ");
+            Debug.Log("UserDataManager // GetAirRunnerLeaderboardData() // ");
+#if AIR_RUNNER
 
 #if !FIREBASE_STORAGE
-        FirestoreDatabaseManager.Instance.CheckDependecies(() =>
-        {
-            if (FirestoreDatabaseManager.db == null)
+            FirestoreDatabaseManager.Instance.CheckDependecies(() =>
             {
-                Debug.Log("UserDataManager // GetAirRunnerLeaderboardData() // db null");
-            }
-            else
-            {
-                Debug.Log("UserDataManager // GetAirRunnerLeaderboardData() // Grabbed Leaderboard");
-            }
-
-            if (AirRunnerGameManager.selectedLevel.levelName == "Hills")
-            {
-                DocumentReference _airRunnerLeaderboardDocumentRef = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document(gameRecordsFirebaseDocument).Collection("airRunner").Document("scores").Collection("hills").Document("leaderboards").Collection("entry").Document("VSm5NhKPR4HSm9JXYNrF");
-
-                leaderboardRef = _airRunnerLeaderboardDocumentRef;
-            }
-            else
-            {
-                //Debug.Log("Getting Dark Sky Leaderboard");
-                DocumentReference _airRunnerLeaderboardDocumentRef = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document(gameRecordsFirebaseDocument).Collection("airRunner").Document("scores").Collection("hills").Document("leaderboards").Collection("entry").Document("VSm5NhKPR4HSm9JXYNrF");
-
-                leaderboardRef = _airRunnerLeaderboardDocumentRef;
-            }
-
-            OnSuccess += (document) =>
-            {
-                if (document.Exists == false)
+                if (FirestoreDatabaseManager.db == null)
                 {
-                    Debug.Log("UserDataManager//InitializeUserData// Dont have document, we are going to upload one using the current match data");
-                    airRunnerLoadedData = AirRunnerGameManager.GetAirRunnerMetricsFromJson();
-                    CompareAirRunnerData(airRunnerLoadedData, airRunnerLoadedData);
+                    Debug.Log("UserDataManager // GetAirRunnerLeaderboardData() // db null");
                 }
                 else
                 {
-                    Debug.Log("UserDataManager //GetAirRunnerLeaderboardData() // We have document");
-                    ReadAirRunnerDocument(document);
+                    Debug.Log("UserDataManager // GetAirRunnerLeaderboardData() // Grabbed Leaderboard");
                 }
-            };
-            
-            // Download the users data
-            FirestoreDatabaseManager.Instance.GetDocument(leaderboardRef, OnSuccess, OnError);
-            //Debug.Log("Downloaded Document");
 
-        });
-#endif
-
-    } // END GetRowingLeaderboardData
-
-
-#endregion
-
-
-    #region GET FIT FIGHTER LEADERBOARD DATA
-
-
-    //----------------------------------//
-    public void GetFitFighterLeaderboardData(Action<DocumentSnapshot> OnSuccess, Action<string> OnError)
-    //----------------------------------//
-    {
-        Debug.Log("UserDataManager // GetAirRunnerLeaderboardData() // ");
-
-#if !FIREBASE_STORAGE
-        FirestoreDatabaseManager.Instance.CheckDependecies(() =>
-        {
-            if (FirestoreDatabaseManager.db == null)
-            {
-                Debug.Log("UserDataManager // GetAirRunnerLeaderboardData() // db null");
-            }
-            else
-            {
-                Debug.Log("UserDataManager // GetAirRunnerLeaderboardData() // Grabbed Leaderboard");
-            }
-
-            DocumentReference _fitFighterLeaderboardDocumentRef = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document(gameRecordsFirebaseDocument).Collection("fitFighter").Document(AuthenticationManager.Instance.user.UserId);
-
-            OnSuccess += (document) =>
-            {
-                if (document.Exists == false)
+                if (AirRunnerGameManager.selectedLevel.levelName == "Hills")
                 {
-                    Debug.Log("UserDataManager//GetFitFighterLeaderboardData() // Dont have document, we are going to upload one using the current match data");
-                    fitFighterLoadedData = RhythmScoreSystem.GetFitFighterMetricsFromJson();
-                    CompareFitFighterData(fitFighterLoadedData, fitFighterLoadedData);
+                    DocumentReference _airRunnerLeaderboardDocumentRef = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document(gameRecordsFirebaseDocument).Collection("airRunner").Document("scores").Collection("hills").Document("leaderboards").Collection("entry").Document("VSm5NhKPR4HSm9JXYNrF");
+
+                    leaderboardRef = _airRunnerLeaderboardDocumentRef;
                 }
                 else
                 {
-                    Debug.Log("UserDataManager //GetFitFighterLeaderboardData() // We have document");
-                    ReadFitFighterDocument(document);
+                    //Debug.Log("Getting Dark Sky Leaderboard");
+                    DocumentReference _airRunnerLeaderboardDocumentRef = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document(gameRecordsFirebaseDocument).Collection("airRunner").Document("scores").Collection("hills").Document("leaderboards").Collection("entry").Document("VSm5NhKPR4HSm9JXYNrF");
+
+                    leaderboardRef = _airRunnerLeaderboardDocumentRef;
                 }
-            };
 
-            // Download the users data
-            FirestoreDatabaseManager.Instance.GetDocument(_fitFighterLeaderboardDocumentRef, OnSuccess, OnError);
+                OnSuccess += (document) =>
+                {
+                    if (document.Exists == false)
+                    {
+                        Debug.Log("UserDataManager//InitializeUserData// Dont have document, we are going to upload one using the current match data");
+                        airRunnerLoadedData = AirRunnerGameManager.GetAirRunnerMetricsFromJson();
+                        CompareAirRunnerData(airRunnerLoadedData, airRunnerLoadedData);
+                    }
+                    else
+                    {
+                        Debug.Log("UserDataManager //GetAirRunnerLeaderboardData() // We have document");
+                        ReadAirRunnerDocument(document);
+                    }
+                };
 
-        });
+                // Download the users data
+                FirestoreDatabaseManager.Instance.GetDocument(leaderboardRef, OnSuccess, OnError);
+                //Debug.Log("Downloaded Document");
+#endif
+            });
 #endif
 
-    } // END GetFitFighterLeaderboardData
+        } // END GetRowingLeaderboardData
 
 
 #endregion
 
 
-    #region GET ROWING LEADERBOARD DATA
+        #region GET FIT FIGHTER LEADERBOARD DATA
 
 
-    //----------------------------------//
-    public void GetRowingLeaderboardData(Action<DocumentSnapshot> OnSuccess, Action<string> OnError)
-    //----------------------------------//
-    {
-        Debug.Log("UserDataManager // GetLeaderboardData() // ");
+        //----------------------------------//
+        public void GetFitFighterLeaderboardData(Action<DocumentSnapshot> OnSuccess, Action<string> OnError)
+        //----------------------------------//
+        {
+            Debug.Log("UserDataManager // GetAirRunnerLeaderboardData() // ");
+
+#if FIT_FIGHTER
 
 #if !FIREBASE_STORAGE
-        FirestoreDatabaseManager.Instance.CheckDependecies(() =>
-        {
-            if (FirestoreDatabaseManager.db == null)
+            FirestoreDatabaseManager.Instance.CheckDependecies(() =>
             {
-                Debug.Log("UserDataManager // GetRowingLeaderboardData() // db null");
-            }
-            else
-            {
-                Debug.Log("UserDataManager // GetRowingLeaderboardData() // Grabbed Leaderboard");
-            }
-
-            DocumentReference _leaderboardDocumentRef = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document(gameRecordsFirebaseDocument).Collection(rowingGameCollection).Document(personalBestDocument).Collection("user").Document(AuthenticationManager.Instance.user.UserId);
-
-            OnSuccess += (document) =>
-            {
-                if (document.Exists == false)
+                if (FirestoreDatabaseManager.db == null)
                 {
-                    Debug.Log("UserDataManager // GetRowingLeaderboardData() // Dont have document, we are going to upload one using the current match data");
-
-                    rowingCanoeLoadedData = RowingTrackManager.GetRowingMetricsFromJson();
-                    CompareRowingData(rowingCanoeLoadedData, rowingCanoeLoadedData);
+                    Debug.Log("UserDataManager // GetAirRunnerLeaderboardData() // db null");
                 }
                 else
                 {
-                    Debug.Log("UserDataManager // GetRowingLeaderboardData() // We have document");
-                    ReadRowingDocument(document);
+                    Debug.Log("UserDataManager // GetAirRunnerLeaderboardData() // Grabbed Leaderboard");
                 }
-            };
 
-            // Download the users data
-            FirestoreDatabaseManager.Instance.GetDocument(_leaderboardDocumentRef, OnSuccess, OnError);
-           
-        });
+                DocumentReference _fitFighterLeaderboardDocumentRef = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document(gameRecordsFirebaseDocument).Collection("fitFighter").Document(AuthenticationManager.Instance.user.UserId);
+
+                OnSuccess += (document) =>
+                {
+                    if (document.Exists == false)
+                    {
+                        Debug.Log("UserDataManager//GetFitFighterLeaderboardData() // Dont have document, we are going to upload one using the current match data");
+                        fitFighterLoadedData = RhythmScoreSystem.GetFitFighterMetricsFromJson();
+                        CompareFitFighterData(fitFighterLoadedData, fitFighterLoadedData);
+                    }
+                    else
+                    {
+                        Debug.Log("UserDataManager //GetFitFighterLeaderboardData() // We have document");
+                        ReadFitFighterDocument(document);
+                    }
+                };
+
+                // Download the users data
+                FirestoreDatabaseManager.Instance.GetDocument(_fitFighterLeaderboardDocumentRef, OnSuccess, OnError);
+
+            });
+#endif
+#endif
+        } // END GetFitFighterLeaderboardData
+
+
+#endregion
+
+
+        #region GET ROWING LEADERBOARD DATA
+
+
+        //----------------------------------//
+        public void GetRowingLeaderboardData(Action<DocumentSnapshot> OnSuccess, Action<string> OnError)
+        //----------------------------------//
+        {
+            Debug.Log("UserDataManager // GetLeaderboardData() // ");
+#if ROWING_CANOE
+#if !FIREBASE_STORAGE
+            FirestoreDatabaseManager.Instance.CheckDependecies(() =>
+            {
+                if (FirestoreDatabaseManager.db == null)
+                {
+                    Debug.Log("UserDataManager // GetRowingLeaderboardData() // db null");
+                }
+                else
+                {
+                    Debug.Log("UserDataManager // GetRowingLeaderboardData() // Grabbed Leaderboard");
+                }
+
+                DocumentReference _leaderboardDocumentRef = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document(gameRecordsFirebaseDocument).Collection(rowingGameCollection).Document(personalBestDocument).Collection("user").Document(AuthenticationManager.Instance.user.UserId);
+
+                OnSuccess += (document) =>
+                {
+                    if (document.Exists == false)
+                    {
+                        Debug.Log("UserDataManager // GetRowingLeaderboardData() // Dont have document, we are going to upload one using the current match data");
+
+                        rowingCanoeLoadedData = RowingTrackManager.GetRowingMetricsFromJson();
+                        CompareRowingData(rowingCanoeLoadedData, rowingCanoeLoadedData);
+                    }
+                    else
+                    {
+                        Debug.Log("UserDataManager // GetRowingLeaderboardData() // We have document");
+                        ReadRowingDocument(document);
+                    }
+                };
+
+                // Download the users data
+                FirestoreDatabaseManager.Instance.GetDocument(_leaderboardDocumentRef, OnSuccess, OnError);
+#endif
+            });
 #endif
 
-    } // END GetRowingLeaderboardData
+        } // END GetRowingLeaderboardData
 
 
 #endregion
 
 
-    #region GET ROWING LEADERBOARD ENTRIES
+        #region GET ROWING LEADERBOARD ENTRIES
 
 
-    //----------------------------//
-    public async void GetRowingLeaderboardEntries(string _name = null ,string _score = null)
-    //----------------------------//
-    {
-        Debug.Log("UserDataManager.cs // GetRowingLeaderboardEntries() // ");
-
-        Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("canoeRowing").Document("leaderboards").Collection("entry");
-
-        if (localLeaderboard == null)
+        //----------------------------//
+        public async void GetRowingLeaderboardEntries(string _name = null, string _score = null)
+        //----------------------------//
         {
-            localLeaderboard = FindObjectOfType<LocalLeaderboard>();
-        }
-        
-        await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
-        {
-            QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
+            Debug.Log("UserDataManager.cs // GetRowingLeaderboardEntries() // ");
 
-            foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+            Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("canoeRowing").Document("leaderboards").Collection("entry");
+
+            if (localLeaderboard == null)
             {
-                //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
-
-                Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
-
-                leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
-            }
-        });
-        
-        if (_name != null && _score != null)
-        {
-            LocalPlayerInfo info = new LocalPlayerInfo(_name, Convert.ToInt32(_score));
-            localLeaderboard.collectedStats.Add(info);
-
-            Debug.Log("Got new high score data");
-        }
-
-        for (int i = 0; i < leaderboardEntries.Length; i++)
-        {
-            //Assign The String To An Array And Split Using The Comma Character
-            //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
-            string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
-
-            Debug.Log(_statsSplit);
-
-            //RowingTrackManager.GetRowingMetricsFromJson();
-            localLeaderboard.ReadData(_statsSplit);
-        }
-
-        string[] GetStringArrayValue(object _raw)
-        {
-            List<object> _objList = (List<object>)_raw;
-
-            List<string> _stringList = new List<string>();
-
-            foreach (object _obj in _objList)
-            {
-                string _string = Convert.ToString(_obj);
-                _stringList.Add(_string);
+                localLeaderboard = FindObjectOfType<LocalLeaderboard>();
             }
 
-            string[] _stringArr = _stringList.ToArray();
-
-            return _stringArr;
-        }
-
-    } // END GetRowingLeaderboardEntries
-
-
-#endregion
-
-
-    #region GET FIT FIGHTER LEADERBOARD ENTRIES
-
-
-    //----------------------------//
-    public async void GetFitFighterLeaderboardEntries(string _name = null, string _score = null)
-    //----------------------------//
-    {
-        Debug.Log("UserDataManager.cs // GetFitFighterLeaderboardEntries() // ");
-
-        Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("fitFighter").Document("leaderboards").Collection("entry");
-
-        if (localLeaderboard == null)
-        {
-            localLeaderboard = FindObjectOfType<LocalLeaderboard>();
-        }
-
-        await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
-        {
-            QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
-
-            foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+            await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
             {
-                //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+                QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
 
-                Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+                foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+                {
+                    //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
 
-                leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
-            }
-        });
+                    Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
 
-        if (_name != null && _score != null)
-        {
-            LocalPlayerInfo info = new LocalPlayerInfo(_name, Convert.ToInt32(_score));
-            localLeaderboard.collectedStats.Add(info);
+                    leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
+                }
+            });
 
-            Debug.Log("Got new high score data");
-        }
-
-        for (int i = 0; i < leaderboardEntries.Length; i++)
-        {
-            //Assign The String To An Array And Split Using The Comma Character
-            //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
-            string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
-
-            Debug.Log(_statsSplit);
-
-            //RhythmScoreSystem.GetFitFighterMetricsFromJson();
-            localLeaderboard.ReadData(_statsSplit);
-        }
-
-        //localLeaderboard.UpdateFitFighterToFirebase();
-
-        string[] GetStringArrayValue(object _raw)
-        {
-            List<object> _objList = (List<object>)_raw;
-
-            List<string> _stringList = new List<string>();
-
-            foreach (object _obj in _objList)
+            if (_name != null && _score != null)
             {
-                string _string = Convert.ToString(_obj);
-                _stringList.Add(_string);
+                LocalPlayerInfo info = new LocalPlayerInfo(_name, Convert.ToInt32(_score));
+                localLeaderboard.collectedStats.Add(info);
+
+                Debug.Log("Got new high score data");
             }
 
-            string[] _stringArr = _stringList.ToArray();
-
-            return _stringArr;
-        }
-
-    } // END GetHillsLeaderboardEntries
-
-
-#endregion
-
-
-    #region GET HILLS LEADERBOARD ENTRIES
-
-
-    //----------------------------//
-    public async void GetHillsLeaderboardEntries(string _name = null, string _score = null)
-    //----------------------------//
-    {
-        Debug.Log("UserDataManager.cs // GetHillsLeaderboardEntries() // ");
-
-        Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("airRunner").Document("scores").Collection("hills").Document("leaderboards").Collection("entry");
-
-        if (localLeaderboard == null)
-        {
-            localLeaderboard = FindObjectOfType<LocalLeaderboard>();
-        }
-
-        await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
-        {
-            QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
-
-            foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+            for (int i = 0; i < leaderboardEntries.Length; i++)
             {
-                //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+                //Assign The String To An Array And Split Using The Comma Character
+                //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
+                string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
 
-                Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+                Debug.Log(_statsSplit);
 
-                leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
-            }
-        });
-
-        if (_name != null && _score != null)
-        {
-            LocalPlayerInfo info = new LocalPlayerInfo(_name, Convert.ToInt32(_score));
-            localLeaderboard.collectedStats.Add(info);
-
-            Debug.Log("Got new high score data");
-        }
-
-        for (int i = 0; i < leaderboardEntries.Length; i++)
-        {
-            //Assign The String To An Array And Split Using The Comma Character
-            //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
-            string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
-
-            Debug.Log(_statsSplit);
-
-            localLeaderboard.ReadData(_statsSplit);
-        }
-
-        string[] GetStringArrayValue(object _raw)
-        {
-            List<object> _objList = (List<object>)_raw;
-
-            List<string> _stringList = new List<string>();
-
-            foreach (object _obj in _objList)
-            {
-                string _string = Convert.ToString(_obj);
-                _stringList.Add(_string);
+                //RowingTrackManager.GetRowingMetricsFromJson();
+                localLeaderboard.ReadData(_statsSplit);
             }
 
-            string[] _stringArr = _stringList.ToArray();
-
-            return _stringArr;
-        }
-
-    } // END GetHillsLeaderboardEntries
-
-
-#endregion
-
-
-    #region GET DARK SKY LEADERBOARD ENTRIES
-
-
-    //----------------------------//
-    public async void GetDarkSkyLeaderboardEntries(string _name = null, string _score = null)
-    //----------------------------//
-    {
-        Debug.Log("UserDataManager.cs // GetDarkSkyLeaderboardEntries() // ");
-
-        Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("airRunner").Document("scores").Collection("darkSky").Document("leaderboards").Collection("entry");
-
-        if (localLeaderboard == null)
-        {
-            localLeaderboard = FindObjectOfType<LocalLeaderboard>();
-        }
-
-        await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
-        {
-            QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
-
-            foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+            string[] GetStringArrayValue(object _raw)
             {
-                //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+                List<object> _objList = (List<object>)_raw;
 
-                Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+                List<string> _stringList = new List<string>();
 
-                leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
-            }
-        });
+                foreach (object _obj in _objList)
+                {
+                    string _string = Convert.ToString(_obj);
+                    _stringList.Add(_string);
+                }
 
-        if (_name != null && _score != null)
-        {
-            LocalPlayerInfo info = new LocalPlayerInfo(_name, Convert.ToInt32(_score));
-            localLeaderboard.collectedStats.Add(info);
+                string[] _stringArr = _stringList.ToArray();
 
-            Debug.Log("Got new high score data");
-        }
-
-        for (int i = 0; i < leaderboardEntries.Length; i++)
-        {
-            //Assign The String To An Array And Split Using The Comma Character
-            //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
-            string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
-
-            //Debug.Log(_statsSplit);
-
-            localLeaderboard.ReadData(_statsSplit);
-        }
-
-        //localLeaderboard.UpdateAirRunnerDarkSkyToFirebase();
-
-        string[] GetStringArrayValue(object _raw)
-        {
-            List<object> _objList = (List<object>)_raw;
-
-            List<string> _stringList = new List<string>();
-
-            foreach (object _obj in _objList)
-            {
-                string _string = Convert.ToString(_obj);
-                _stringList.Add(_string);
+                return _stringArr;
             }
 
-            string[] _stringArr = _stringList.ToArray();
-
-            return _stringArr;
-        }
-
-    } // END GetHillsLeaderboardEntries
+        } // END GetRowingLeaderboardEntries
 
 
-#endregion
+        #endregion
 
 
-    #region GET DESERT LEADERBOARD ENTRIES
+        #region GET FIT FIGHTER LEADERBOARD ENTRIES
 
 
-    //----------------------------//
-    public async void GetDesertLeaderboardEntries(string _name = null, string _score = null)
-    //----------------------------//
-    {
-        Debug.Log("UserDataManager.cs // GetDesertLeaderboardEntries() // ");
-
-        Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("airRunner").Document("scores").Collection("desert").Document("leaderboards").Collection("entry");
-
-        if (localLeaderboard == null)
+        //----------------------------//
+        public async void GetFitFighterLeaderboardEntries(string _name = null, string _score = null)
+        //----------------------------//
         {
-            localLeaderboard = FindObjectOfType<LocalLeaderboard>();
-        }
+            Debug.Log("UserDataManager.cs // GetFitFighterLeaderboardEntries() // ");
 
-        await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
-        {
-            QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
+            Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("fitFighter").Document("leaderboards").Collection("entry");
 
-            foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+            if (localLeaderboard == null)
             {
-                //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
-
-                Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
-
-                leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
-            }
-        });
-
-        if (_name != null && _score != null)
-        {
-            LocalPlayerInfo info = new LocalPlayerInfo(_name, Convert.ToInt32(_score));
-            localLeaderboard.collectedStats.Add(info);
-
-            Debug.Log("Got new high score data");
-        }
-
-        for (int i = 0; i < leaderboardEntries.Length; i++)
-        {
-            //Assign The String To An Array And Split Using The Comma Character
-            //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
-            string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
-
-            //Debug.Log(_statsSplit);
-
-            localLeaderboard.ReadData(_statsSplit);
-        }
-
-        //localLeaderboard.UpdateAirRunnerDesertToFirebase();
-
-        string[] GetStringArrayValue(object _raw)
-        {
-            List<object> _objList = (List<object>)_raw;
-
-            List<string> _stringList = new List<string>();
-
-            foreach (object _obj in _objList)
-            {
-                string _string = Convert.ToString(_obj);
-                _stringList.Add(_string);
+                localLeaderboard = FindObjectOfType<LocalLeaderboard>();
             }
 
-            string[] _stringArr = _stringList.ToArray();
-
-            return _stringArr;
-        }
-
-    } // END GetHillsLeaderboardEntries
-
-
-#endregion
-
-
-    #region GET FOREST LEADERBOARD ENTRIES
-
-
-    //----------------------------//
-    public async void GetForestLeaderboardEntries(string _name = null, string _score = null)
-    //----------------------------//
-    {
-        Debug.Log("UserDataManager.cs // GetDesertLeaderboardEntries() // ");
-
-        Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("airRunner").Document("scores").Collection("forest").Document("leaderboards").Collection("entry");
-
-        if (localLeaderboard == null)
-        {
-            localLeaderboard = FindObjectOfType<LocalLeaderboard>();
-        }
-
-        await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
-        {
-            QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
-
-            foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+            await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
             {
-                //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+                QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
 
-                Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+                foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+                {
+                    //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
 
-                leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
-            }
-        });
+                    Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
 
-        if (_name != null && _score != null)
-        {
-            LocalPlayerInfo info = new LocalPlayerInfo(_name, Convert.ToInt32(_score));
-            localLeaderboard.collectedStats.Add(info);
+                    leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
+                }
+            });
 
-            Debug.Log("Got new high score data");
-        }
-
-        for (int i = 0; i < leaderboardEntries.Length; i++)
-        {
-            //Assign The String To An Array And Split Using The Comma Character
-            //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
-            string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
-
-            //Debug.Log(_statsSplit);
-
-            localLeaderboard.ReadData(_statsSplit);
-        }
-
-        //localLeaderboard.UpdateAirRunnerForestToFirebase();
-
-        string[] GetStringArrayValue(object _raw)
-        {
-            List<object> _objList = (List<object>)_raw;
-
-            List<string> _stringList = new List<string>();
-
-            foreach (object _obj in _objList)
+            if (_name != null && _score != null)
             {
-                string _string = Convert.ToString(_obj);
-                _stringList.Add(_string);
+                LocalPlayerInfo info = new LocalPlayerInfo(_name, Convert.ToInt32(_score));
+                localLeaderboard.collectedStats.Add(info);
+
+                Debug.Log("Got new high score data");
             }
 
-            string[] _stringArr = _stringList.ToArray();
-
-            return _stringArr;
-        }
-
-    } // END GetHillsLeaderboardEntries
-
-
-#endregion
-
-
-    #region UPDATE LEADERBOARD ENTRIES
-
-
-    //----------------------------//
-    public async void UpdateRowingLeaderboardEntries(string _name = null, string _score = null)
-    //----------------------------//
-    {
-        Debug.Log("UserDataManager.cs // UpdateLeaderboardEntries() // ");
-
-        Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("canoeRowing").Document("leaderboards").Collection("entry");
-
-        if (localLeaderboard == null)
-        {
-            localLeaderboard = FindObjectOfType<LocalLeaderboard>();
-        }
-
-        await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
-        {
-            QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
-
-            foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+            for (int i = 0; i < leaderboardEntries.Length; i++)
             {
-                //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+                //Assign The String To An Array And Split Using The Comma Character
+                //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
+                string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
 
-                Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+                Debug.Log(_statsSplit);
 
-                leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
-            }
-        });
-
-        if (_name != null && _score != null)
-        {
-            LocalPlayerInfo info = new LocalPlayerInfo(_name, Convert.ToInt32(_score));
-            localLeaderboard.collectedStats.Add(info);
-
-            Debug.Log("Got new high score data");
-        }
-
-        for (int i = 0; i < leaderboardEntries.Length; i++)
-        {
-            //Assign The String To An Array And Split Using The Comma Character
-            //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
-            string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
-
-            Debug.Log(_statsSplit);
-
-            localLeaderboard.ReadData(_statsSplit);
-        }
-
-        string[] GetStringArrayValue(object _raw)
-        {
-            List<object> _objList = (List<object>)_raw;
-
-            List<string> _stringList = new List<string>();
-
-            foreach (object _obj in _objList)
-            {
-                string _string = Convert.ToString(_obj);
-                _stringList.Add(_string);
+                //RhythmScoreSystem.GetFitFighterMetricsFromJson();
+                localLeaderboard.ReadData(_statsSplit);
             }
 
-            string[] _stringArr = _stringList.ToArray();
+            //localLeaderboard.UpdateFitFighterToFirebase();
 
-            return _stringArr;
-        }
-
-    } // END GetRowingLeaderboardEntries
-
-
-    //----------------------------//
-    public async void UpdateFitFighterLeaderboardEntries(string _name = null, string _score = null)
-    //----------------------------//
-    {
-        Debug.Log("UserDataManager.cs // GetRowingLeaderboardEntries() // ");
-
-        Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("fitFighter").Document("leaderboards").Collection("entry");
-
-        if (localLeaderboard == null)
-        {
-            localLeaderboard = FindObjectOfType<LocalLeaderboard>();
-        }
-
-        await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
-        {
-            QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
-
-            foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+            string[] GetStringArrayValue(object _raw)
             {
-                //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+                List<object> _objList = (List<object>)_raw;
 
-                Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+                List<string> _stringList = new List<string>();
 
-                leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
-            }
-        });
+                foreach (object _obj in _objList)
+                {
+                    string _string = Convert.ToString(_obj);
+                    _stringList.Add(_string);
+                }
 
-        if (_name != null && _score != null)
-        {
-            LocalPlayerInfo info = new LocalPlayerInfo(_name, Convert.ToInt32(_score));
-            localLeaderboard.collectedStats.Add(info);
+                string[] _stringArr = _stringList.ToArray();
 
-            Debug.Log("Got new high score data");
-        }
-
-        for (int i = 0; i < leaderboardEntries.Length; i++)
-        {
-            //Assign The String To An Array And Split Using The Comma Character
-            //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
-            string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
-
-            Debug.Log(_statsSplit);
-
-            localLeaderboard.ReadData(_statsSplit);
-        }
-
-        string[] GetStringArrayValue(object _raw)
-        {
-            List<object> _objList = (List<object>)_raw;
-
-            List<string> _stringList = new List<string>();
-
-            foreach (object _obj in _objList)
-            {
-                string _string = Convert.ToString(_obj);
-                _stringList.Add(_string);
+                return _stringArr;
             }
 
-            string[] _stringArr = _stringList.ToArray();
-
-            return _stringArr;
-        }
-
-    } // END GetRowingLeaderboardEntries
+        } // END GetHillsLeaderboardEntries
 
 
-#endregion
+        #endregion
 
 
-    #region READ DOCUMENTS
+        #region GET HILLS LEADERBOARD ENTRIES
 
 
-#region READ USER DOCUMENT
+        //----------------------------//
+        public async void GetHillsLeaderboardEntries(string _name = null, string _score = null)
+        //----------------------------//
+        {
+            Debug.Log("UserDataManager.cs // GetHillsLeaderboardEntries() // ");
+
+            Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("airRunner").Document("scores").Collection("hills").Document("leaderboards").Collection("entry");
+
+            if (localLeaderboard == null)
+            {
+                localLeaderboard = FindObjectOfType<LocalLeaderboard>();
+            }
+
+            await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
+            {
+                QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
+
+                foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+                {
+                    //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+
+                    Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+
+                    leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
+                }
+            });
+
+            if (_name != null && _score != null)
+            {
+                LocalPlayerInfo info = new LocalPlayerInfo(_name, Convert.ToInt32(_score));
+                localLeaderboard.collectedStats.Add(info);
+
+                Debug.Log("Got new high score data");
+            }
+
+            for (int i = 0; i < leaderboardEntries.Length; i++)
+            {
+                //Assign The String To An Array And Split Using The Comma Character
+                //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
+                string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
+
+                Debug.Log(_statsSplit);
+
+                localLeaderboard.ReadData(_statsSplit);
+            }
+
+            string[] GetStringArrayValue(object _raw)
+            {
+                List<object> _objList = (List<object>)_raw;
+
+                List<string> _stringList = new List<string>();
+
+                foreach (object _obj in _objList)
+                {
+                    string _string = Convert.ToString(_obj);
+                    _stringList.Add(_string);
+                }
+
+                string[] _stringArr = _stringList.ToArray();
+
+                return _stringArr;
+            }
+
+        } // END GetHillsLeaderboardEntries
 
 
-    //--------------------------------------------------//
-    public void ReadUserDocument(DocumentSnapshot document) 
-    //--------------------------------------------------//
-    {
-        Dictionary<string, object> userDataDictionary = document.ToDictionary();
-
-        UserDataMeta userMetadata = new UserDataMeta();
-        userMetadata.birthday = (string)userDataDictionary["birthday"];
-        userMetadata.challenge = (Goal)(Convert.ToInt32(userDataDictionary["challenge"]));
-        userMetadata.country = (string)userDataDictionary["country"];
-        userMetadata.creationTime = (Timestamp)userDataDictionary["creationTime"];
-        userMetadata.displayName = (string)userDataDictionary["displayName"];
-        userMetadata.email = (string)userDataDictionary["email"];
-        userMetadata.firstName = (string)userDataDictionary["firstName"];
-        userMetadata.firstTimeInApp = (bool)userDataDictionary["firstTimeInApp"];
-        userMetadata.fitnessLevel = (FitnessLevel)(Convert.ToInt32(userDataDictionary["fitnessLevel"]));
-        userMetadata.gender = (Gender)(Convert.ToInt32(userDataDictionary["gender"]));
-        userMetadata.height = Convert.ToInt32(userDataDictionary["height"]);
-        userMetadata.heightFeets = Convert.ToInt32(userDataDictionary["heightFeets"]);
-        userMetadata.heightInches = Convert.ToInt32(userDataDictionary["heightInches"]);
-        userMetadata.imperialMeasurement = (bool)(userDataDictionary["imperialMeasurement"]);
-        userMetadata.instructor = (string)(userDataDictionary["instructor"]);
-        userMetadata.isGrandFathered = (bool)(userDataDictionary["isGrandFathered"]);
-        userMetadata.lastLogin = (string)(userDataDictionary["lastLogin"]);
-        userMetadata.lastName = (string)(userDataDictionary["lastName"]);
-        userMetadata.nickname = (string)(userDataDictionary["nickname"]);
-        userMetadata.photo = (string)(userDataDictionary["photo"]);
-        userMetadata.photoURL = (string)(userDataDictionary["photoURL"]);
-        
-        if(userDataDictionary.ContainsKey("photoUrl"))
-            userMetadata.photoUrl = (string)(userDataDictionary["photoUrl"]);
-        
-        userMetadata.uid = (string)(userDataDictionary["uid"]);
-        userMetadata.weight = Convert.ToInt32(userDataDictionary["weight"]);
-        userMetadata.weightLbs = Convert.ToInt32(userDataDictionary["weightLbs"]);
-
-        loadedData = userMetadata;
-        
-        OnUserDataInitialized?.Invoke();
-
-        //Debug.Log("UserDataManager//ReadDocument// gender " + loadedData.gender.ToString());
-
-    } // END ReadDocument
+        #endregion
 
 
-#endregion
+        #region GET DARK SKY LEADERBOARD ENTRIES
 
 
-#region READ AIR RUNNER DOCUMENT
+        //----------------------------//
+        public async void GetDarkSkyLeaderboardEntries(string _name = null, string _score = null)
+        //----------------------------//
+        {
+            Debug.Log("UserDataManager.cs // GetDarkSkyLeaderboardEntries() // ");
+
+            Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("airRunner").Document("scores").Collection("darkSky").Document("leaderboards").Collection("entry");
+
+            if (localLeaderboard == null)
+            {
+                localLeaderboard = FindObjectOfType<LocalLeaderboard>();
+            }
+
+            await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
+            {
+                QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
+
+                foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+                {
+                    //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+
+                    Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+
+                    leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
+                }
+            });
+
+            if (_name != null && _score != null)
+            {
+                LocalPlayerInfo info = new LocalPlayerInfo(_name, Convert.ToInt32(_score));
+                localLeaderboard.collectedStats.Add(info);
+
+                Debug.Log("Got new high score data");
+            }
+
+            for (int i = 0; i < leaderboardEntries.Length; i++)
+            {
+                //Assign The String To An Array And Split Using The Comma Character
+                //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
+                string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
+
+                //Debug.Log(_statsSplit);
+
+                localLeaderboard.ReadData(_statsSplit);
+            }
+
+            //localLeaderboard.UpdateAirRunnerDarkSkyToFirebase();
+
+            string[] GetStringArrayValue(object _raw)
+            {
+                List<object> _objList = (List<object>)_raw;
+
+                List<string> _stringList = new List<string>();
+
+                foreach (object _obj in _objList)
+                {
+                    string _string = Convert.ToString(_obj);
+                    _stringList.Add(_string);
+                }
+
+                string[] _stringArr = _stringList.ToArray();
+
+                return _stringArr;
+            }
+
+        } // END GetHillsLeaderboardEntries
 
 
-    //--------------------------------------------------//
-    private static void ReadAirRunnerDocument(DocumentSnapshot _document)
-    //--------------------------------------------------//
-    {
+        #endregion
+
+
+        #region GET DESERT LEADERBOARD ENTRIES
+
+
+        //----------------------------//
+        public async void GetDesertLeaderboardEntries(string _name = null, string _score = null)
+        //----------------------------//
+        {
+            Debug.Log("UserDataManager.cs // GetDesertLeaderboardEntries() // ");
+
+            Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("airRunner").Document("scores").Collection("desert").Document("leaderboards").Collection("entry");
+
+            if (localLeaderboard == null)
+            {
+                localLeaderboard = FindObjectOfType<LocalLeaderboard>();
+            }
+
+            await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
+            {
+                QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
+
+                foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+                {
+                    //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+
+                    Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+
+                    leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
+                }
+            });
+
+            if (_name != null && _score != null)
+            {
+                LocalPlayerInfo info = new LocalPlayerInfo(_name, Convert.ToInt32(_score));
+                localLeaderboard.collectedStats.Add(info);
+
+                Debug.Log("Got new high score data");
+            }
+
+            for (int i = 0; i < leaderboardEntries.Length; i++)
+            {
+                //Assign The String To An Array And Split Using The Comma Character
+                //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
+                string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
+
+                //Debug.Log(_statsSplit);
+
+                localLeaderboard.ReadData(_statsSplit);
+            }
+
+            //localLeaderboard.UpdateAirRunnerDesertToFirebase();
+
+            string[] GetStringArrayValue(object _raw)
+            {
+                List<object> _objList = (List<object>)_raw;
+
+                List<string> _stringList = new List<string>();
+
+                foreach (object _obj in _objList)
+                {
+                    string _string = Convert.ToString(_obj);
+                    _stringList.Add(_string);
+                }
+
+                string[] _stringArr = _stringList.ToArray();
+
+                return _stringArr;
+            }
+
+        } // END GetHillsLeaderboardEntries
+
+
+        #endregion
+
+
+        #region GET FOREST LEADERBOARD ENTRIES
+
+
+        //----------------------------//
+        public async void GetForestLeaderboardEntries(string _name = null, string _score = null)
+        //----------------------------//
+        {
+            Debug.Log("UserDataManager.cs // GetDesertLeaderboardEntries() // ");
+
+            Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("airRunner").Document("scores").Collection("forest").Document("leaderboards").Collection("entry");
+
+            if (localLeaderboard == null)
+            {
+                localLeaderboard = FindObjectOfType<LocalLeaderboard>();
+            }
+
+            await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
+            {
+                QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
+
+                foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+                {
+                    //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+
+                    Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+
+                    leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
+                }
+            });
+
+            if (_name != null && _score != null)
+            {
+                LocalPlayerInfo info = new LocalPlayerInfo(_name, Convert.ToInt32(_score));
+                localLeaderboard.collectedStats.Add(info);
+
+                Debug.Log("Got new high score data");
+            }
+
+            for (int i = 0; i < leaderboardEntries.Length; i++)
+            {
+                //Assign The String To An Array And Split Using The Comma Character
+                //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
+                string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
+
+                //Debug.Log(_statsSplit);
+
+                localLeaderboard.ReadData(_statsSplit);
+            }
+
+            //localLeaderboard.UpdateAirRunnerForestToFirebase();
+
+            string[] GetStringArrayValue(object _raw)
+            {
+                List<object> _objList = (List<object>)_raw;
+
+                List<string> _stringList = new List<string>();
+
+                foreach (object _obj in _objList)
+                {
+                    string _string = Convert.ToString(_obj);
+                    _stringList.Add(_string);
+                }
+
+                string[] _stringArr = _stringList.ToArray();
+
+                return _stringArr;
+            }
+
+        } // END GetHillsLeaderboardEntries
+
+
+        #endregion
+
+
+        #region UPDATE LEADERBOARD ENTRIES
+
+
+        //----------------------------//
+        public async void UpdateRowingLeaderboardEntries(string _name = null, string _score = null)
+        //----------------------------//
+        {
+            Debug.Log("UserDataManager.cs // UpdateLeaderboardEntries() // ");
+
+            Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("canoeRowing").Document("leaderboards").Collection("entry");
+
+            if (localLeaderboard == null)
+            {
+                localLeaderboard = FindObjectOfType<LocalLeaderboard>();
+            }
+
+            await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
+            {
+                QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
+
+                foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+                {
+                    //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+
+                    Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+
+                    leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
+                }
+            });
+
+            if (_name != null && _score != null)
+            {
+                LocalPlayerInfo info = new LocalPlayerInfo(_name, Convert.ToInt32(_score));
+                localLeaderboard.collectedStats.Add(info);
+
+                Debug.Log("Got new high score data");
+            }
+
+            for (int i = 0; i < leaderboardEntries.Length; i++)
+            {
+                //Assign The String To An Array And Split Using The Comma Character
+                //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
+                string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
+
+                Debug.Log(_statsSplit);
+
+                localLeaderboard.ReadData(_statsSplit);
+            }
+
+            string[] GetStringArrayValue(object _raw)
+            {
+                List<object> _objList = (List<object>)_raw;
+
+                List<string> _stringList = new List<string>();
+
+                foreach (object _obj in _objList)
+                {
+                    string _string = Convert.ToString(_obj);
+                    _stringList.Add(_string);
+                }
+
+                string[] _stringArr = _stringList.ToArray();
+
+                return _stringArr;
+            }
+
+        } // END GetRowingLeaderboardEntries
+
+
+        //----------------------------//
+        public async void UpdateFitFighterLeaderboardEntries(string _name = null, string _score = null)
+        //----------------------------//
+        {
+            Debug.Log("UserDataManager.cs // GetRowingLeaderboardEntries() // ");
+
+            Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("fitFighter").Document("leaderboards").Collection("entry");
+
+            if (localLeaderboard == null)
+            {
+                localLeaderboard = FindObjectOfType<LocalLeaderboard>();
+            }
+
+            await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
+            {
+                QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
+
+                foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+                {
+                    //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+
+                    Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+
+                    leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
+                }
+            });
+
+            if (_name != null && _score != null)
+            {
+                LocalPlayerInfo info = new LocalPlayerInfo(_name, Convert.ToInt32(_score));
+                localLeaderboard.collectedStats.Add(info);
+
+                Debug.Log("Got new high score data");
+            }
+
+            for (int i = 0; i < leaderboardEntries.Length; i++)
+            {
+                //Assign The String To An Array And Split Using The Comma Character
+                //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
+                string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
+
+                Debug.Log(_statsSplit);
+
+                localLeaderboard.ReadData(_statsSplit);
+            }
+
+            string[] GetStringArrayValue(object _raw)
+            {
+                List<object> _objList = (List<object>)_raw;
+
+                List<string> _stringList = new List<string>();
+
+                foreach (object _obj in _objList)
+                {
+                    string _string = Convert.ToString(_obj);
+                    _stringList.Add(_string);
+                }
+
+                string[] _stringArr = _stringList.ToArray();
+
+                return _stringArr;
+            }
+
+        } // END GetRowingLeaderboardEntries
+
+
+        #endregion
+
+
+        #region READ DOCUMENTS
+
+
+        #region READ USER DOCUMENT
+
+
+        //--------------------------------------------------//
+        public void ReadUserDocument(DocumentSnapshot document)
+        //--------------------------------------------------//
+        {
+            Dictionary<string, object> userDataDictionary = document.ToDictionary();
+
+            UserDataMeta userMetadata = new UserDataMeta();
+            userMetadata.birthday = (string)userDataDictionary["birthday"];
+            userMetadata.challenge = (Goal)(Convert.ToInt32(userDataDictionary["challenge"]));
+            userMetadata.country = (string)userDataDictionary["country"];
+            userMetadata.creationTime = (Timestamp)userDataDictionary["creationTime"];
+            userMetadata.displayName = (string)userDataDictionary["displayName"];
+            userMetadata.email = (string)userDataDictionary["email"];
+            userMetadata.firstName = (string)userDataDictionary["firstName"];
+            userMetadata.firstTimeInApp = (bool)userDataDictionary["firstTimeInApp"];
+            userMetadata.fitnessLevel = (FitnessLevel)(Convert.ToInt32(userDataDictionary["fitnessLevel"]));
+            userMetadata.gender = (Gender)(Convert.ToInt32(userDataDictionary["gender"]));
+            userMetadata.height = Convert.ToInt32(userDataDictionary["height"]);
+            userMetadata.heightFeets = Convert.ToInt32(userDataDictionary["heightFeets"]);
+            userMetadata.heightInches = Convert.ToInt32(userDataDictionary["heightInches"]);
+            userMetadata.imperialMeasurement = (bool)(userDataDictionary["imperialMeasurement"]);
+            userMetadata.instructor = (string)(userDataDictionary["instructor"]);
+            userMetadata.isGrandFathered = (bool)(userDataDictionary["isGrandFathered"]);
+            userMetadata.lastLogin = (string)(userDataDictionary["lastLogin"]);
+            userMetadata.lastName = (string)(userDataDictionary["lastName"]);
+            userMetadata.nickname = (string)(userDataDictionary["nickname"]);
+            userMetadata.photo = (string)(userDataDictionary["photo"]);
+            userMetadata.photoURL = (string)(userDataDictionary["photoURL"]);
+
+            if (userDataDictionary.ContainsKey("photoUrl"))
+                userMetadata.photoUrl = (string)(userDataDictionary["photoUrl"]);
+
+            userMetadata.uid = (string)(userDataDictionary["uid"]);
+            userMetadata.weight = Convert.ToInt32(userDataDictionary["weight"]);
+            userMetadata.weightLbs = Convert.ToInt32(userDataDictionary["weightLbs"]);
+
+            loadedData = userMetadata;
+
+            OnUserDataInitialized?.Invoke();
+
+            //Debug.Log("UserDataManager//ReadDocument// gender " + loadedData.gender.ToString());
+
+        } // END ReadDocument
+
+
+        #endregion
+
+
+        #region READ AIR RUNNER DOCUMENT
+
+
+        //--------------------------------------------------//
+        private static void ReadAirRunnerDocument(DocumentSnapshot _document)
+        //--------------------------------------------------//
+        {
+#if AIR_RUNNER
         Dictionary<string, object> _airRunnerDataDictionary = _document.ToDictionary();
 
         GameMetrics.AirRunnerGameMetrics _airRunnerMetrics = new GameMetrics.AirRunnerGameMetrics();
@@ -1021,20 +1028,21 @@ public class UserDataManager : Singleton<UserDataManager>
         Debug.Log("UserDataManager.cs // ReadRowingDocument() // Grabbed Document from Firebase" );
 
         CompareAirRunnerData(AirRunnerGameManager.GetAirRunnerMetricsFromJson(), airRunnerLoadedData);
-
-    } // END ReadRowingDocument
-
-
-#endregion
+#endif
+        } // END ReadRowingDocument
 
 
-#region READ FIT FIGHTER DOCUMENT
+        #endregion
 
 
-    //--------------------------------------------------//
-    private static void ReadFitFighterDocument(DocumentSnapshot _document)
-    //--------------------------------------------------//
-    {
+        #region READ FIT FIGHTER DOCUMENT
+
+
+        //--------------------------------------------------//
+        private static void ReadFitFighterDocument(DocumentSnapshot _document)
+        //--------------------------------------------------//
+        {
+#if FIT_FIGHTER
         Dictionary<string, object> _fighterDataDictionary = _document.ToDictionary();
 
         GameMetrics.FitFighterGameMetrics _fighterMetrics= new GameMetrics.FitFighterGameMetrics();
@@ -1079,20 +1087,21 @@ public class UserDataManager : Singleton<UserDataManager>
         }
 
         CompareFitFighterData(RhythmScoreSystem.GetFitFighterMetricsFromJson(), fitFighterLoadedData);
-
-    } // END ReadRowingDocument
-
-
-#endregion
+#endif
+        } // END ReadRowingDocument
 
 
-#region READ ROWING DOCUMENT
+        #endregion
 
 
-    //--------------------------------------------------//
-    private static void ReadRowingDocument(DocumentSnapshot _document)
-    //--------------------------------------------------//
-    {
+        #region READ ROWING DOCUMENT
+
+
+        //--------------------------------------------------//
+        private static void ReadRowingDocument(DocumentSnapshot _document)
+        //--------------------------------------------------//
+        {
+#if ROWING_CANOE
         Dictionary<string, object> _rowingDataDictionary = _document.ToDictionary();
 
         GameMetrics.RowingCanoeGameMetrics _rowingMetrics = new GameMetrics.RowingCanoeGameMetrics();
@@ -1153,410 +1162,411 @@ public class UserDataManager : Singleton<UserDataManager>
         }
 
         CompareRowingData(RowingTrackManager.GetRowingMetricsFromJson(), rowingCanoeLoadedData);
-
-    } // END ReadRowingDocument
-
-
-    #endregion
+#endif
+        } // END ReadRowingDocument
 
 
-    #endregion
+        #endregion
 
 
-    //----------------------------//
-    public async void UpdateCanoeLeaderboard()
-    //----------------------------//
-    {
-        Debug.Log("UserDataManager.cs // UpdateCanoeLeaderboard() // ");
+        #endregion
 
-        Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("canoeRowing").Document("leaderboards").Collection("entry");
 
-        if (localLeaderboard == null)
+        //----------------------------//
+        public async void UpdateCanoeLeaderboard()
+        //----------------------------//
         {
-            localLeaderboard = FindObjectOfType<LocalLeaderboard>();
-        }
+            Debug.Log("UserDataManager.cs // UpdateCanoeLeaderboard() // ");
 
-        await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
-        {
-            QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
+            Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("canoeRowing").Document("leaderboards").Collection("entry");
 
-            foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+            if (localLeaderboard == null)
             {
-                //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
-
-                Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
-
-                leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
-            }
-        });
-
-        for (int i = 0; i < leaderboardEntries.Length; i++)
-        {
-            //Assign The String To An Array And Split Using The Comma Character
-            //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
-            string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
-            /*
-            if(_statsSplit == "")
-            {
-                Debug.Log("Returned because of null string");
-                return;
-            }
-            */
-            Debug.Log(_statsSplit);
-
-            localLeaderboard.ReadData(_statsSplit);
-        }
-
-        localLeaderboard.UpdateCanoeToFirebase();
-
-        string[] GetStringArrayValue(object _raw)
-        {
-            List<object> _objList = (List<object>)_raw;
-
-            List<string> _stringList = new List<string>();
-
-            foreach (object _obj in _objList)
-            {
-                string _string = Convert.ToString(_obj);
-                _stringList.Add(_string);
+                localLeaderboard = FindObjectOfType<LocalLeaderboard>();
             }
 
-            string[] _stringArr = _stringList.ToArray();
-
-            return _stringArr;
-        }
-
-    } // END GetHillsLeaderboardEntries
-
-
-    //----------------------------//
-    public async void UpdateFitFighterLeaderboard()
-    //----------------------------//
-    {
-        Debug.Log("UserDataManager.cs // UpdateCanoeLeaderboard() // ");
-
-        Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("fitFighter").Document("leaderboards").Collection("entry");
-
-        if (localLeaderboard == null)
-        {
-            localLeaderboard = FindObjectOfType<LocalLeaderboard>();
-        }
-
-        await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
-        {
-            QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
-
-            foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+            await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
             {
-                //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+                QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
 
-                Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+                foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+                {
+                    //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
 
-                leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
-            }
-        });
+                    Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
 
-        for (int i = 0; i < leaderboardEntries.Length; i++)
-        {
-            //Assign The String To An Array And Split Using The Comma Character
-            //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
-            string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
-            /*
-            if(_statsSplit == "")
+                    leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
+                }
+            });
+
+            for (int i = 0; i < leaderboardEntries.Length; i++)
             {
-                Debug.Log("Returned because of null string");
-                return;
-            }
-            */
-            Debug.Log(_statsSplit);
+                //Assign The String To An Array And Split Using The Comma Character
+                //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
+                string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
+                /*
+                if(_statsSplit == "")
+                {
+                    Debug.Log("Returned because of null string");
+                    return;
+                }
+                */
+                Debug.Log(_statsSplit);
 
-            localLeaderboard.ReadData(_statsSplit);
-        }
-
-        localLeaderboard.UpdateFitFighterToFirebase();
-
-        string[] GetStringArrayValue(object _raw)
-        {
-            List<object> _objList = (List<object>)_raw;
-
-            List<string> _stringList = new List<string>();
-
-            foreach (object _obj in _objList)
-            {
-                string _string = Convert.ToString(_obj);
-                _stringList.Add(_string);
+                localLeaderboard.ReadData(_statsSplit);
             }
 
-            string[] _stringArr = _stringList.ToArray();
+            localLeaderboard.UpdateCanoeToFirebase();
 
-            return _stringArr;
-        }
-
-    } // END GetHillsLeaderboardEntries
-
-
-    //----------------------------//
-    public async void UpdateHillsLeaderboard()
-    //----------------------------//
-    {
-        Debug.Log("UserDataManager.cs // UpdateHillsLeaderboardEntries() // ");
-
-        Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("airRunner").Document("scores").Collection("hills").Document("leaderboards").Collection("entry");
-
-        if (localLeaderboard == null)
-        {
-            localLeaderboard = FindObjectOfType<LocalLeaderboard>();
-        }
-
-        await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
-        {
-            QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
-
-            foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+            string[] GetStringArrayValue(object _raw)
             {
-                //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+                List<object> _objList = (List<object>)_raw;
 
-                Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+                List<string> _stringList = new List<string>();
 
-                leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
-            }
-        });
+                foreach (object _obj in _objList)
+                {
+                    string _string = Convert.ToString(_obj);
+                    _stringList.Add(_string);
+                }
 
-        for (int i = 0; i < leaderboardEntries.Length; i++)
-        {
-            //Assign The String To An Array And Split Using The Comma Character
-            //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
-            string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
- 
-            Debug.Log(_statsSplit);
+                string[] _stringArr = _stringList.ToArray();
 
-            localLeaderboard.ReadData(_statsSplit);
-        }
-
-        localLeaderboard.UpdateAirRunnerHillsToFirebase();
-
-        string[] GetStringArrayValue(object _raw)
-        {
-            List<object> _objList = (List<object>)_raw;
-
-            List<string> _stringList = new List<string>();
-
-            foreach (object _obj in _objList)
-            {
-                string _string = Convert.ToString(_obj);
-                _stringList.Add(_string);
+                return _stringArr;
             }
 
-            string[] _stringArr = _stringList.ToArray();
-
-            return _stringArr;
-        }
-
-    } // END GetHillsLeaderboardEntries
+        } // END GetHillsLeaderboardEntries
 
 
-    //----------------------------//
-    public async void UpdateDarkSkyLeaderboard()
-    //----------------------------//
-    {
-        Debug.Log("UserDataManager.cs // UpdateDarkSkyLeaderboard() // ");
-
-        Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("airRunner").Document("scores").Collection("darkSky").Document("leaderboards").Collection("entry");
-
-        if (localLeaderboard == null)
+        //----------------------------//
+        public async void UpdateFitFighterLeaderboard()
+        //----------------------------//
         {
-            localLeaderboard = FindObjectOfType<LocalLeaderboard>();
-        }
+            Debug.Log("UserDataManager.cs // UpdateCanoeLeaderboard() // ");
 
-        await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
-        {
-            QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
+            Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("fitFighter").Document("leaderboards").Collection("entry");
 
-            foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+            if (localLeaderboard == null)
             {
-                //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
-
-                Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
-
-                leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
-            }
-        });
-
-        for (int i = 0; i < leaderboardEntries.Length; i++)
-        {
-            //Assign The String To An Array And Split Using The Comma Character
-            //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
-            string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
-
-            Debug.Log(_statsSplit);
-
-            localLeaderboard.ReadData(_statsSplit);
-        }
-
-        localLeaderboard.UpdateAirRunnerDarkSkyToFirebase();
-
-        string[] GetStringArrayValue(object _raw)
-        {
-            List<object> _objList = (List<object>)_raw;
-
-            List<string> _stringList = new List<string>();
-
-            foreach (object _obj in _objList)
-            {
-                string _string = Convert.ToString(_obj);
-                _stringList.Add(_string);
+                localLeaderboard = FindObjectOfType<LocalLeaderboard>();
             }
 
-            string[] _stringArr = _stringList.ToArray();
-
-            return _stringArr;
-        }
-
-    } // END GetHillsLeaderboardEntries
-
-
-    //----------------------------//
-    public async void UpdateDesertLeaderboard()
-    //----------------------------//
-    {
-        Debug.Log("UserDataManager.cs // UpdateDesertLeaderboard() // ");
-
-        Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("airRunner").Document("scores").Collection("desert").Document("leaderboards").Collection("entry");
-
-        if (localLeaderboard == null)
-        {
-            localLeaderboard = FindObjectOfType<LocalLeaderboard>();
-        }
-
-        await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
-        {
-            QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
-
-            foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+            await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
             {
-                //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+                QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
 
-                Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+                foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+                {
+                    //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
 
-                leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
-            }
-        });
+                    Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
 
-        for (int i = 0; i < leaderboardEntries.Length; i++)
-        {
-            //Assign The String To An Array And Split Using The Comma Character
-            //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
-            string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
-            /*
-            if(_statsSplit == "")
+                    leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
+                }
+            });
+
+            for (int i = 0; i < leaderboardEntries.Length; i++)
             {
-                Debug.Log("Returned because of null string");
-                return;
-            }
-            */
-            Debug.Log(_statsSplit);
+                //Assign The String To An Array And Split Using The Comma Character
+                //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
+                string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
+                /*
+                if(_statsSplit == "")
+                {
+                    Debug.Log("Returned because of null string");
+                    return;
+                }
+                */
+                Debug.Log(_statsSplit);
 
-            localLeaderboard.ReadData(_statsSplit);
-        }
-        
-        localLeaderboard.UpdateAirRunnerDesertToFirebase();
-
-        string[] GetStringArrayValue(object _raw)
-        {
-            List<object> _objList = (List<object>)_raw;
-
-            List<string> _stringList = new List<string>();
-
-            foreach (object _obj in _objList)
-            {
-                string _string = Convert.ToString(_obj);
-                _stringList.Add(_string);
+                localLeaderboard.ReadData(_statsSplit);
             }
 
-            string[] _stringArr = _stringList.ToArray();
+            localLeaderboard.UpdateFitFighterToFirebase();
 
-            return _stringArr;
-        }
-
-    } // END GetHillsLeaderboardEntries
-
-
-    //----------------------------//
-    public async void UpdateForestLeaderboard()
-    //----------------------------//
-    {
-        Debug.Log("UserDataManager.cs // UpdateForestLeaderboard() // ");
-
-        Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("airRunner").Document("scores").Collection("forest").Document("leaderboards").Collection("entry");
-
-        if (localLeaderboard == null)
-        {
-            localLeaderboard = FindObjectOfType<LocalLeaderboard>();
-        }
-
-        await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
-        {
-            QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
-
-            foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+            string[] GetStringArrayValue(object _raw)
             {
-                //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+                List<object> _objList = (List<object>)_raw;
 
-                Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+                List<string> _stringList = new List<string>();
 
-                leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
-            }
-        });
+                foreach (object _obj in _objList)
+                {
+                    string _string = Convert.ToString(_obj);
+                    _stringList.Add(_string);
+                }
 
-        for (int i = 0; i < leaderboardEntries.Length; i++)
-        {
-            //Assign The String To An Array And Split Using The Comma Character
-            //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
-            string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
-            /*
-            if(_statsSplit == "")
-            {
-                Debug.Log("Returned because of null string");
-                return;
-            }
-            */
-            Debug.Log(_statsSplit);
+                string[] _stringArr = _stringList.ToArray();
 
-            localLeaderboard.ReadData(_statsSplit);
-        }
-
-        localLeaderboard.UpdateAirRunnerForestToFirebase();
-
-        string[] GetStringArrayValue(object _raw)
-        {
-            List<object> _objList = (List<object>)_raw;
-
-            List<string> _stringList = new List<string>();
-
-            foreach (object _obj in _objList)
-            {
-                string _string = Convert.ToString(_obj);
-                _stringList.Add(_string);
+                return _stringArr;
             }
 
-            string[] _stringArr = _stringList.ToArray();
-
-            return _stringArr;
-        }
-
-    } // END GetHillsLeaderboardEntries
+        } // END GetHillsLeaderboardEntries
 
 
-#region COMPARE DATA
+        //----------------------------//
+        public async void UpdateHillsLeaderboard()
+        //----------------------------//
+        {
+            Debug.Log("UserDataManager.cs // UpdateHillsLeaderboardEntries() // ");
+
+            Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("airRunner").Document("scores").Collection("hills").Document("leaderboards").Collection("entry");
+
+            if (localLeaderboard == null)
+            {
+                localLeaderboard = FindObjectOfType<LocalLeaderboard>();
+            }
+
+            await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
+            {
+                QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
+
+                foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+                {
+                    //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+
+                    Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+
+                    leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
+                }
+            });
+
+            for (int i = 0; i < leaderboardEntries.Length; i++)
+            {
+                //Assign The String To An Array And Split Using The Comma Character
+                //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
+                string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
+
+                Debug.Log(_statsSplit);
+
+                localLeaderboard.ReadData(_statsSplit);
+            }
+
+            localLeaderboard.UpdateAirRunnerHillsToFirebase();
+
+            string[] GetStringArrayValue(object _raw)
+            {
+                List<object> _objList = (List<object>)_raw;
+
+                List<string> _stringList = new List<string>();
+
+                foreach (object _obj in _objList)
+                {
+                    string _string = Convert.ToString(_obj);
+                    _stringList.Add(_string);
+                }
+
+                string[] _stringArr = _stringList.ToArray();
+
+                return _stringArr;
+            }
+
+        } // END GetHillsLeaderboardEntries
 
 
-    #region COMPARE AIRRUNNER DATA
+        //----------------------------//
+        public async void UpdateDarkSkyLeaderboard()
+        //----------------------------//
+        {
+            Debug.Log("UserDataManager.cs // UpdateDarkSkyLeaderboard() // ");
+
+            Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("airRunner").Document("scores").Collection("darkSky").Document("leaderboards").Collection("entry");
+
+            if (localLeaderboard == null)
+            {
+                localLeaderboard = FindObjectOfType<LocalLeaderboard>();
+            }
+
+            await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
+            {
+                QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
+
+                foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+                {
+                    //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+
+                    Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+
+                    leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
+                }
+            });
+
+            for (int i = 0; i < leaderboardEntries.Length; i++)
+            {
+                //Assign The String To An Array And Split Using The Comma Character
+                //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
+                string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
+
+                Debug.Log(_statsSplit);
+
+                localLeaderboard.ReadData(_statsSplit);
+            }
+
+            localLeaderboard.UpdateAirRunnerDarkSkyToFirebase();
+
+            string[] GetStringArrayValue(object _raw)
+            {
+                List<object> _objList = (List<object>)_raw;
+
+                List<string> _stringList = new List<string>();
+
+                foreach (object _obj in _objList)
+                {
+                    string _string = Convert.ToString(_obj);
+                    _stringList.Add(_string);
+                }
+
+                string[] _stringArr = _stringList.ToArray();
+
+                return _stringArr;
+            }
+
+        } // END GetHillsLeaderboardEntries
 
 
-    //--------------------------------------------------------//
-    private static void CompareAirRunnerData(GameMetrics.AirRunnerGameMetrics _localJsonMetrics, GameMetrics.AirRunnerGameMetrics _firebaseMetrics)
-    //--------------------------------------------------------//
-    {
+        //----------------------------//
+        public async void UpdateDesertLeaderboard()
+        //----------------------------//
+        {
+            Debug.Log("UserDataManager.cs // UpdateDesertLeaderboard() // ");
+
+            Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("airRunner").Document("scores").Collection("desert").Document("leaderboards").Collection("entry");
+
+            if (localLeaderboard == null)
+            {
+                localLeaderboard = FindObjectOfType<LocalLeaderboard>();
+            }
+
+            await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
+            {
+                QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
+
+                foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+                {
+                    //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+
+                    Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+
+                    leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
+                }
+            });
+
+            for (int i = 0; i < leaderboardEntries.Length; i++)
+            {
+                //Assign The String To An Array And Split Using The Comma Character
+                //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
+                string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
+                /*
+                if(_statsSplit == "")
+                {
+                    Debug.Log("Returned because of null string");
+                    return;
+                }
+                */
+                Debug.Log(_statsSplit);
+
+                localLeaderboard.ReadData(_statsSplit);
+            }
+
+            localLeaderboard.UpdateAirRunnerDesertToFirebase();
+
+            string[] GetStringArrayValue(object _raw)
+            {
+                List<object> _objList = (List<object>)_raw;
+
+                List<string> _stringList = new List<string>();
+
+                foreach (object _obj in _objList)
+                {
+                    string _string = Convert.ToString(_obj);
+                    _stringList.Add(_string);
+                }
+
+                string[] _stringArr = _stringList.ToArray();
+
+                return _stringArr;
+            }
+
+        } // END GetHillsLeaderboardEntries
+
+
+        //----------------------------//
+        public async void UpdateForestLeaderboard()
+        //----------------------------//
+        {
+            Debug.Log("UserDataManager.cs // UpdateForestLeaderboard() // ");
+
+            Firebase.Firestore.Query _leaderboardQuery = FirestoreDatabaseManager.db.Collection(mobileFirebaseCollection).Document("gameLeaderboards").Collection("airRunner").Document("scores").Collection("forest").Document("leaderboards").Collection("entry");
+
+            if (localLeaderboard == null)
+            {
+                localLeaderboard = FindObjectOfType<LocalLeaderboard>();
+            }
+
+            await _leaderboardQuery.GetSnapshotAsync().ContinueWith(task =>
+            {
+                QuerySnapshot _leaderboardEntriesQuerySnapshot = task.Result;
+
+                foreach (DocumentSnapshot _documentSnapshot in _leaderboardEntriesQuerySnapshot.Documents)
+                {
+                    //Debug.Log(String.Format("Document data for {0} document:", _documentSnapshot.Id));
+
+                    Dictionary<string, object> leaderboardEntry = _documentSnapshot.ToDictionary();
+
+                    leaderboardEntries = GetStringArrayValue(leaderboardEntry["scores"]);
+                }
+            });
+
+            for (int i = 0; i < leaderboardEntries.Length; i++)
+            {
+                //Assign The String To An Array And Split Using The Comma Character
+                //This Will Remove The Comma From The String, And Leave Behind The Separated Name And Score
+                string _statsSplit = leaderboardEntries.ToArray().GetValue(i).ToString();
+                /*
+                if(_statsSplit == "")
+                {
+                    Debug.Log("Returned because of null string");
+                    return;
+                }
+                */
+                Debug.Log(_statsSplit);
+
+                localLeaderboard.ReadData(_statsSplit);
+            }
+
+            localLeaderboard.UpdateAirRunnerForestToFirebase();
+
+            string[] GetStringArrayValue(object _raw)
+            {
+                List<object> _objList = (List<object>)_raw;
+
+                List<string> _stringList = new List<string>();
+
+                foreach (object _obj in _objList)
+                {
+                    string _string = Convert.ToString(_obj);
+                    _stringList.Add(_string);
+                }
+
+                string[] _stringArr = _stringList.ToArray();
+
+                return _stringArr;
+            }
+
+        } // END GetHillsLeaderboardEntries
+
+
+        #region COMPARE DATA
+
+
+        #region COMPARE AIRRUNNER DATA
+
+
+        //--------------------------------------------------------//
+        private static void CompareAirRunnerData(GameMetrics.AirRunnerGameMetrics _localJsonMetrics, GameMetrics.AirRunnerGameMetrics _firebaseMetrics)
+        //--------------------------------------------------------//
+        {
+#if AIR_RUNNER
         Debug.Log("UserDataManager CompareAirRunnerData.cs // Comparing Data to see if we should update");
 
         bool hasNewValuesToUpload = false;
@@ -1612,22 +1622,22 @@ public class UserDataManager : Singleton<UserDataManager>
 
         } // END UpdateRowingMetrics
 
-
-    } // END CompareAirRunnerData
-
-
-#endregion
+#endif
+        } // END CompareAirRunnerData
 
 
-    #region COMPARE ROWING DATA
+        #endregion
 
 
-    //--------------------------------------------------------//
-    private static void CompareRowingData(GameMetrics.RowingCanoeGameMetrics _localJsonMetrics, GameMetrics.RowingCanoeGameMetrics _firebaseMetrics)
-    //--------------------------------------------------------//
-    {
-        Debug.Log("UserDataManager CompareRowingData.cs // Comparing Data to see if we should update");
+        #region COMPARE ROWING DATA
 
+
+        //--------------------------------------------------------//
+        private static void CompareRowingData(GameMetrics.RowingCanoeGameMetrics _localJsonMetrics, GameMetrics.RowingCanoeGameMetrics _firebaseMetrics)
+        //--------------------------------------------------------//
+        {
+            Debug.Log("UserDataManager CompareRowingData.cs // Comparing Data to see if we should update");
+#if ROWING_CANOE
         bool hasNewValuesToUpload = false;
         //UpdateRowingMetrics();
         //UserDataManager.Instance.localLeaderboard.UpdateCanoeToFirebase();
@@ -1673,22 +1683,23 @@ public class UserDataManager : Singleton<UserDataManager>
             rowingCanoeLoadedData.leaderboardScore = _localJsonMetrics.leaderboardScore;
 
         } // END UpdateRowingMetrics
-
-    } // END CompareRowingData
-
-
-#endregion
+#endif
+        } // END CompareRowingData
 
 
-#region COMPARE FIT FIGHTER DATA
+        #endregion
 
 
-    //--------------------------------------------------------//
-    private static void CompareFitFighterData(GameMetrics.FitFighterGameMetrics _localJsonMetrics, GameMetrics.FitFighterGameMetrics _firebaseMetrics)
-    //--------------------------------------------------------//
-    {
-        Debug.Log("UserDataManager CompareRowingData.cs // Comparing Data to see if we should update");
+        #region COMPARE FIT FIGHTER DATA
 
+
+        //--------------------------------------------------------//
+        private static void CompareFitFighterData(GameMetrics.FitFighterGameMetrics _localJsonMetrics, GameMetrics.FitFighterGameMetrics _firebaseMetrics)
+        //--------------------------------------------------------//
+        {
+            Debug.Log("UserDataManager CompareRowingData.cs // Comparing Data to see if we should update");
+
+#if FIT_FIGHTER
         bool _hasNewValuesToUpload = false;
 
         // If we have a higher score, then update Firebase
@@ -1730,27 +1741,28 @@ public class UserDataManager : Singleton<UserDataManager>
             fitFighterLoadedData.repetitionsPerRound = _localJsonMetrics.repetitionsPerRound;
 
         } // END UpdateFighterMetrics
+#endif
+
+        } // END CompareFitFighterData
 
 
-    } // END CompareFitFighterData
+        #endregion
 
 
-#endregion
+        #endregion
 
 
-#endregion
+        #region RECIEVE DATA
 
 
-#region RECIEVE DATA
+        #region RECIEVE AIR RUNNER DATA
 
 
-#region RECIEVE AIR RUNNER DATA
-
-
-    //-------------------------------------//
-    public void RecieveAirRunnerData()
-    //-------------------------------------//
-    {
+        //-------------------------------------//
+        public void RecieveAirRunnerData()
+        //-------------------------------------//
+        {
+#if AIR_RUNNER
         if (airRunnerLoadedData == null)
         {
             //Grab User Data
@@ -1767,19 +1779,20 @@ public class UserDataManager : Singleton<UserDataManager>
             Debug.Log("UserDataManager.cs // ReceiveAirRunnerData() // we already have loaded data.  Comparing Data");
             CompareAirRunnerData(AirRunnerGameManager.GetAirRunnerMetricsFromJson(), airRunnerLoadedData);
         }
+#endif
+        }//END ReceiveRowingData
 
-    }//END ReceiveRowingData
-
-#endregion
-
-
-#region RECIEVE FIT FIGHTER DATA
+        #endregion
 
 
-    //-------------------------------------//
-    public void RecieveFitFighterData()
-    //-------------------------------------//
-    {
+        #region RECIEVE FIT FIGHTER DATA
+
+
+        //-------------------------------------//
+        public void RecieveFitFighterData()
+        //-------------------------------------//
+        {
+#if FIT_FIGHTER
         if (airRunnerLoadedData == null)
         {
             //Grab User Data
@@ -1796,19 +1809,20 @@ public class UserDataManager : Singleton<UserDataManager>
             Debug.Log("UserDataManager.cs // ReceiveFitFighterData() // we already have loaded data.  Comparing Data");
             CompareFitFighterData(RhythmScoreSystem.GetFitFighterMetricsFromJson(), fitFighterLoadedData);
         }
+#endif
+        }//END ReceiveRowingData
 
-    }//END ReceiveRowingData
-
-#endregion
-
-
-#region RECIEVE ROWING DATA
+        #endregion
 
 
-    //-------------------------------------//
-    public void RecieveRowingData()
-    //-------------------------------------//
-    {
+        #region RECIEVE ROWING DATA
+
+
+        //-------------------------------------//
+        public void RecieveRowingData()
+        //-------------------------------------//
+        {
+#if ROWING_CANOE
         if (rowingCanoeLoadedData == null)
         {
             // Grab User Data
@@ -1825,26 +1839,27 @@ public class UserDataManager : Singleton<UserDataManager>
             CompareRowingData(RowingTrackManager.GetRowingMetricsFromJson(), rowingCanoeLoadedData);
             Debug.Log("UserDataManager.cs // SetRowingData() // we already have loaded data.  Comparing Data");
         }
-
-    } // END ReceiveRowingData
-
-
-#endregion
+#endif
+        } // END ReceiveRowingData
 
 
-#endregion
+        #endregion
 
 
-#region UPDATE MOBILE GAME METRICS DOCUMENTS
+        #endregion
 
 
-#region UPDATE AIRRUNNER DOCUMENT
+        #region UPDATE MOBILE GAME METRICS DOCUMENTS
 
 
-    //---------------------------------//
-    private static void UpdateAirRunnerDocument()
-    //---------------------------------//
-    {
+        #region UPDATE AIRRUNNER DOCUMENT
+
+
+        //---------------------------------//
+        private static void UpdateAirRunnerDocument()
+        //---------------------------------//
+        {
+#if AIR_RUNNER
         Debug.Log("UserDataManager.cs // UploadAirRunnerDocument() //  Starting upload");
 
         Dictionary<string, object> _airRunnerData = new Dictionary<string, object>
@@ -1864,22 +1879,22 @@ public class UserDataManager : Singleton<UserDataManager>
             {
                 Debug.LogError("UserData//InitializeUserData// error " + error);
             });
-
-    } // END UploadAirRunnerDocument
-
-
-#endregion
+#endif
+        } // END UploadAirRunnerDocument
 
 
-#region UPDATE FIT FIGHTER DOCUMENT
+        #endregion
 
 
-    //---------------------------------//
-    public static void UpdateFitFighterDocument()
-    //---------------------------------//
-    {
-        Debug.Log("UserDataManager.cs // UploadFitFighterDocument() //  Starting upload");
+        #region UPDATE FIT FIGHTER DOCUMENT
 
+
+        //---------------------------------//
+        public static void UpdateFitFighterDocument()
+        //---------------------------------//
+        {
+            Debug.Log("UserDataManager.cs // UploadFitFighterDocument() //  Starting upload");
+#if FIT_FIGHTER
         Dictionary<string, object> _fitFighterData = new Dictionary<string, object>
         {
             { "roundsWon", fitFighterLoadedData.roundsWon },
@@ -1908,21 +1923,22 @@ public class UserDataManager : Singleton<UserDataManager>
             {
                 Debug.LogError("UserData//InitializeUserData// error " + error);
             });
-
-    } // END UploadFitFighterDocument
-
-
-#endregion
+#endif
+        } // END UploadFitFighterDocument
 
 
-#region UPLOAD ROWING DOCUMENT
+        #endregion
 
 
-    //---------------------------------//
-    public static void UpdateRowingDocument()
-    //---------------------------------//
-    {
-        Debug.Log("UserDataManager.cs // UploadRowingDocument() //  Starting upload");
+        #region UPLOAD ROWING DOCUMENT
+
+
+        //---------------------------------//
+        public static void UpdateRowingDocument()
+        //---------------------------------//
+        {
+            Debug.Log("UserDataManager.cs // UploadRowingDocument() //  Starting upload");
+#if ROWING_CANOE
 
         Dictionary<string, object> _rowingData = new Dictionary<string, object>
         { 
@@ -1953,18 +1969,18 @@ public class UserDataManager : Singleton<UserDataManager>
             {
                 Debug.LogError("UserData//InitializeUserData// error " + error);
             });
-
-    } // END UploadRowingDocument
-
-
-#endregion
+#endif
+        } // END UploadRowingDocument
 
 
-#endregion
+        #endregion
 
 
-} // END UserDataManager.cs
+        #endregion
 
+
+    } // END UserDataManager.cs
+}
 
 public enum Goal
 {

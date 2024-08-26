@@ -1,0 +1,163 @@
+{
+  "project_info": {
+    "project_number": "278166805972",
+    "firebase_url": "https://maxfit-app.firebaseio.com",
+    "project_id": "maxfit-app",
+    "storage_bucket": "maxfit-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:278166805972:android:ecd9e94d51596e4fb14a41",
+        "android_client_info": {
+          "package_name": "com.MaxProFitness.MaxProGameHub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "278166805972-k852crtbsoufe7t48ge3dv3tj4kum3gb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.MaxProFitness.MaxProGameHub",
+            "certificate_hash": "5bc523987e75d93298b7aeed3de86088151217a0"
+          }
+        },
+        {
+          "client_id": "278166805972-71idrvhfna8cht4ose7mr2cljfqbkqvn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADSeE4f3rvgYulOTk-pZNoPvoaGdq3xBo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "278166805972-71idrvhfna8cht4ose7mr2cljfqbkqvn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "278166805972-in7smiufm8a6munpplhq06jdf3ehlh1q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.maxprofitness.mealplan"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:278166805972:android:cb2ef20ccaa61f8eb14a41",
+        "android_client_info": {
+          "package_name": "com.itza.maxpro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "278166805972-23t71a2657go62f69sn226ouq31e22l5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itza.maxpro",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "278166805972-2d9c4gtpqfb0anvprvjs4hitfs3ofkgl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itza.maxpro",
+            "certificate_hash": "6531d5fead0678f4e0a6368ff93a9e03b57938cd"
+          }
+        },
+        {
+          "client_id": "278166805972-3fpcofovriv99lnqf4sg2bahe4vr9qrb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itza.maxpro",
+            "certificate_hash": "9146bb07e00ca0e78911d1781a2615b3440f0741"
+          }
+        },
+        {
+          "client_id": "278166805972-3g6nmhnnpdldc57v03c8rv3oui7pbhk0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itza.maxpro",
+            "certificate_hash": "66e93a3c390db317356efdac6ed0bdfd2ab9c6ba"
+          }
+        },
+        {
+          "client_id": "278166805972-6uqktpc86e0828eiup0r0smek9p5au8h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itza.maxpro",
+            "certificate_hash": "82ed3373e50e2cc7a04e14512563355e97a358b0"
+          }
+        },
+        {
+          "client_id": "278166805972-94sqdvah8abtbtmcpbpmn868r593u9cd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itza.maxpro",
+            "certificate_hash": "549dad69865fb17052da6c6b8e2d54001576fdc0"
+          }
+        },
+        {
+          "client_id": "278166805972-gc1icn2t5ho9t8phbrigdtleu1i316iv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itza.maxpro",
+            "certificate_hash": "96c26406d2be44b552295220abd70589be7df8db"
+          }
+        },
+        {
+          "client_id": "278166805972-ka6avp0jps2fe272t9bqjfnkuu6jn5cb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itza.maxpro",
+            "certificate_hash": "a9b57eec7b145cb07e680d71c2400db0a8c4ffbe"
+          }
+        },
+        {
+          "client_id": "278166805972-oba7024fjs50246dcip9bh45iuj3gett.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itza.maxpro",
+            "certificate_hash": "db414253394e91a9c202d78778e9eeda8ac714a9"
+          }
+        },
+        {
+          "client_id": "278166805972-71idrvhfna8cht4ose7mr2cljfqbkqvn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADSeE4f3rvgYulOTk-pZNoPvoaGdq3xBo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "278166805972-71idrvhfna8cht4ose7mr2cljfqbkqvn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "278166805972-in7smiufm8a6munpplhq06jdf3ehlh1q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.maxprofitness.mealplan"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

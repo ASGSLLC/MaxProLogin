@@ -1,0 +1,17 @@
+{
+    "name": "MaxProFitness.Sdk.Editor",
+    "references": [
+        "GUID:dbf55a73da121e7458224b914a8065ed"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
