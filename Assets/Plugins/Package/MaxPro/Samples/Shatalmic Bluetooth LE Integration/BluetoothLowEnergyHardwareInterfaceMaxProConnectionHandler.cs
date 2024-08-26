@@ -3,9 +3,9 @@ using System;
 using System.Diagnostics;
 using UnityEngine.Android;
 using UnityEngine.Scripting;
+using MaxProFitness.Integrations;
 
-
-namespace MaxProFitness.Integrations
+namespace maxprofitness.login
 {
     [Preserve]
     public sealed class BluetoothLowEnergyHardwareInterfaceConnectionHandler : IMaxProConnectionHandler

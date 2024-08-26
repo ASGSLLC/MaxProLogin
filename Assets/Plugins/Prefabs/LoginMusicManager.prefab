@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4303511891857585096}
-  - component: {fileID: 1459695173445523858}
+  - component: {fileID: 2412799089399866208}
   - component: {fileID: 1468040451265303351}
   m_Layer: 0
   m_Name: LoginMusicManager
@@ -25,14 +25,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7091258517576691397}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1459695173445523858
+--- !u!114 &2412799089399866208
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,14 +42,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 7091258517576691397}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14a117ebc4c78e9469f55c98a33a59b6, type: 3}
+  m_Script: {fileID: 11500000, guid: cf6ec055cf1e2fc4c8685a918b04a03b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   audioClip:
-  - {fileID: 8300000, guid: 23c1c003955b4bb4f9fb72cb6f59ceab, type: 3}
-  - {fileID: 8300000, guid: 8f7f9d6f557c6944eb6adac29169330b, type: 3}
-  - {fileID: 8300000, guid: e75dc6580bab8f14aa94d2105b4fdc7d, type: 3}
-  - {fileID: 8300000, guid: 8662bdb6e44d473478dc49ce51f89c2a, type: 3}
+  - {fileID: 8300000, guid: 332510840e2f0194a85ac0e68700268e, type: 3}
+  - {fileID: 8300000, guid: e1adb367d6d73064083cd23a40589436, type: 3}
+  - {fileID: 8300000, guid: 9f8172646bb5d1b40a40041ea091450e, type: 3}
+  - {fileID: 8300000, guid: 64e1782732d86ec4b8f515fdef3015e7, type: 3}
 --- !u!82 &1468040451265303351
 AudioSource:
   m_ObjectHideFlags: 0

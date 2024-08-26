@@ -6,6 +6,7 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using maxprofitness.login;
 
 namespace MaxProFitness.Samples
 {

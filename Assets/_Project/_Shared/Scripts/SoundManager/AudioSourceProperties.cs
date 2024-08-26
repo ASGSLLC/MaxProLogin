@@ -1,7 +1,7 @@
 using UnityEngine.Audio;
 using UnityEngine;
 
-namespace MaxProFitness.SharedSound
+namespace maxprofitness.login
 {
     [CreateAssetMenu(menuName = "Sound Manager/Shared Audio Source Properties")]
     public sealed class AudioSourceProperties : ScriptableObject

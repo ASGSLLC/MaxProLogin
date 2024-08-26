@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3338683653379572671}
-  - component: {fileID: 3338683653379572670}
-  - component: {fileID: 3338683653379572668}
+  - component: {fileID: 9212658855075467829}
+  - component: {fileID: 6169736278122433583}
   m_Layer: 0
   m_Name: Fire Base Managers
   m_TagString: Untagged
@@ -25,15 +25,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3338683653379572609}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3338683653379572670
+--- !u!114 &9212658855075467829
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,12 +42,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3338683653379572609}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d441cd30a9c0ca143b81c19b385ee765, type: 3}
+  m_Script: {fileID: 11500000, guid: cd30ceafa90a3724eaa2c2aa45a1bf4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   sendVerificationEmailOnUserRegisterd: 1
-  webClientId: 
---- !u!114 &3338683653379572668
+  webClientId: 278166805972-71idrvhfna8cht4ose7mr2cljfqbkqvn.apps.googleusercontent.com
+--- !u!114 &6169736278122433583
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -56,6 +56,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 3338683653379572609}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52289a0ae74b8f74481a91b2aa883a4d, type: 3}
+  m_Script: {fileID: 11500000, guid: 52a069fb5745d444184628dbb058456a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
