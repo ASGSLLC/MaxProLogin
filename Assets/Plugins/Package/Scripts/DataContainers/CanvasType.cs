@@ -1,4 +1,4 @@
-namespace MaxProFitness.App.UI
+namespace maxprofitness.login
 {
     public enum CanvasType
     {

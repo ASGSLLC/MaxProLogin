@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2da8e011a9b9b0d4fbea47911e1af030, type: 3}
+  m_Name: FFCharacterMovementAudio
+  m_EditorClassIdentifier: 
+  Sound: 205
+  AudioClips:
+  - {fileID: 8300000, guid: 36f4c7d80e2ac684caee6a138cb06a71, type: 3}
+  - {fileID: 8300000, guid: fcab94251a0c9c9459653659e8cdfa56, type: 3}
+  AudioMixerGroup: {fileID: 24304612, guid: 86a7353f2579d476fbaa7f161c2e5d00, type: 2}
+  Volume: 1
+  Pitch: 1
+  SpatialBlend: 0
+  Loop: 0
+  PersistentSound: 0
+  _randomizePitch: 1
+  _minPitch: 0.9
+  _maxPitch: 1.1

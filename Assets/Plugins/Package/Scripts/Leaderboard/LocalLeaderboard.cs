@@ -31,7 +31,7 @@ public class LocalLeaderboard : MonoBehaviour {
 
     CanvasGroup localLeaderboardCanvasGroup;
 
-    //[SerializeField] LeaderboardEntry[] entries;
+    [SerializeField] LeaderboardEntry[] entries;
     [SerializeField] TextMeshProUGUI lbGameNameTMP;
     
     // Assigned in inspector depending on the scene the leaderboard is in

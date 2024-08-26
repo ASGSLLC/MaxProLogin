@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2da8e011a9b9b0d4fbea47911e1af030, type: 3}
+  m_Name: MusicRhytmic_2
+  m_EditorClassIdentifier: 
+  Sound: 213
+  AudioClips:
+  - {fileID: 8300000, guid: 8f7f9d6f557c6944eb6adac29169330b, type: 3}
+  - {fileID: 8300000, guid: e75dc6580bab8f14aa94d2105b4fdc7d, type: 3}
+  - {fileID: 8300000, guid: 8662bdb6e44d473478dc49ce51f89c2a, type: 3}
+  AudioMixerGroup: {fileID: 24328132, guid: 86a7353f2579d476fbaa7f161c2e5d00, type: 2}
+  Volume: 1
+  Pitch: 1
+  SpatialBlend: 0
+  Loop: 0
+  PersistentSound: 0
+  _randomizePitch: 0
+  _minPitch: 0.95
+  _maxPitch: 1.05
