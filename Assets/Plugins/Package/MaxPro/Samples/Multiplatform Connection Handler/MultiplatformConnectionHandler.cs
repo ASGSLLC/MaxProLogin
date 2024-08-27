@@ -2,6 +2,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Scripting;
+using maxprofitness.login;
 
 namespace MaxProFitness.Samples
 {

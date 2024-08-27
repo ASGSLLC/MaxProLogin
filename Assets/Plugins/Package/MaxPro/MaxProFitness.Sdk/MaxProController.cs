@@ -7,6 +7,7 @@ using System.IO.Compression;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using maxprofitness.login;
 
 namespace MaxProFitness.Sdk
 {

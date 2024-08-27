@@ -8,7 +8,7 @@ using MaxProFitness.Integrations;
 namespace maxprofitness.login
 {
     [Preserve]
-    public sealed class BluetoothLowEnergyHardwareInterfaceConnectionHandler : IMaxProConnectionHandler
+    public class BluetoothLowEnergyHardwareInterfaceConnectionHandler : IMaxProConnectionHandler
     {
         public void Initialize(Action onSucceed, Action<string> onFailed)
         {

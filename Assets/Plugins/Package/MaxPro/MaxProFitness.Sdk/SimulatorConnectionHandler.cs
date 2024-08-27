@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using maxprofitness.login;
 
 namespace MaxProFitness.Sdk
 {

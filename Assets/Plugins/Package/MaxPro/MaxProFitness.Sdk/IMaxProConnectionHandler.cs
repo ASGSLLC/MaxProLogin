@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.Scripting;
 
-namespace MaxProFitness.Sdk
+namespace maxprofitness.login
 {
     [Preserve]
     public interface IMaxProConnectionHandler
