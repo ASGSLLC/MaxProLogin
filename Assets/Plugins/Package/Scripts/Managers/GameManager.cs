@@ -230,8 +230,8 @@ using UnityEngine.Scripting;
 
             maxProController = gameObject.AddComponent<MaxProController>();
 
-            maxProController.DefaultConnectionHandler = new BluetoothLowEnergyHardwareInterfaceConnectionHandler();
-
+            //maxProController.DefaultConnectionHandler = new BluetoothLowEnergyHardwareInterfaceConnectionHandler();
+            
             maxProController.OnStateChanged += HandleMaxProControllerStateChanged;
             maxProController.OnMaxProCommandReceived += HandleMaxProControllerMaxProCommandReceived;
 
