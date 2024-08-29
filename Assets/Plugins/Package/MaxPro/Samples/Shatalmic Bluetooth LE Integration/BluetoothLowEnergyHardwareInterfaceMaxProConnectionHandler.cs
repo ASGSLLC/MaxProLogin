@@ -65,7 +65,7 @@ using maxprofitness.login;
 
             string subscribeCharacteristic = null;
             string writeCharacteristic = null;
-
+            
             try
             {
                 BluetoothLEHardwareInterface.ConnectToPeripheral(address, null, null, delegate (string _, string service, string characteristic)
@@ -105,7 +105,7 @@ using maxprofitness.login;
                 onFailed?.Invoke(e.Message);
             }
         }
-
+        
         public void Disconnect(string address, Action onFinished)
         {
             //UnityEngine.Debug.Log("BluetoothLowEnergyHardwareInterfaceConnectionHandler//Disconnect// ");
@@ -134,7 +134,7 @@ using maxprofitness.login;
                 onDataReceived?.Invoke(data);
             });
         }
-
+        
         public void StopListening(string address, string service, string characteristic, Action onFinished)
         {
             //UnityEngine.Debug.Log("BluetoothLowEnergyHardwareInterfaceConnectionHandler//StopListening// ");
