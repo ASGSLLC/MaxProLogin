@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
-
-namespace MaxProFitness.Sdk.Editor
+using MaxProFitness.Sdk;
+namespace maxprofitness.login
 {
     [CanEditMultipleObjects]
     [CustomEditor(typeof(MaxProController))]

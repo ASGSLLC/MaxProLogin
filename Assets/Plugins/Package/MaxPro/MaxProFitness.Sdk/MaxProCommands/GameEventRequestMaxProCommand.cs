@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.Scripting;
-
-namespace MaxProFitness.Sdk
+using MaxProFitness.Sdk;
+namespace maxprofitness.login
 {
     /// <summary>
     ///     Response to <see cref="GameEventRequestAppCommand"/>.

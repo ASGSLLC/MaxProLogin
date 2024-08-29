@@ -1,6 +1,6 @@
 using UnityEngine.Scripting;
-
-namespace MaxProFitness.Sdk
+using MaxProFitness.Sdk;
+namespace maxprofitness.login
 {
     [Preserve]
     public interface IMaxProCommand

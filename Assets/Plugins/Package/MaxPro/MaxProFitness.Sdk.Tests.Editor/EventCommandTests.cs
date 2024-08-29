@@ -1,12 +1,12 @@
 ﻿using NUnit.Framework;
-
-namespace MaxProFitness.Sdk
+using MaxProFitness.Sdk;
+namespace maxprofitness.login
 {
     [TestOf(typeof(EventCommand))]
     public class EventCommandTests
     {
         private const string TestInput = "7B02010100630A0400003F06590A13000A0A0400003F06580A13000A7D";
-        private const CommandType CommandType = Sdk.CommandType.Event;
+        private const CommandType CommandType = maxprofitness.login.CommandType.Event;
 
         [Test]
         public void CommandType_MatchesInputAfter_Deserialize()

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.Scripting;
-
-namespace MaxProFitness.Sdk
+using MaxProFitness.Sdk;
+namespace maxprofitness.login
 {
     /// <summary>
     ///     It is expected to receive a <see cref="StatusRequestMaxProCommand"/> as response. Does not work while game mode is on!

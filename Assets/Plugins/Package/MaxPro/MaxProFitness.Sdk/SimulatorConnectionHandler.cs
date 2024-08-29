@@ -2,9 +2,10 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using maxprofitness.login;
+//using maxprofitness.login;
+using MaxProFitness.Sdk;
 
-namespace MaxProFitness.Sdk
+namespace maxprofitness.login
 {
     [DisallowMultipleComponent]
     [AddComponentMenu("MAXPRO Fitness/Simulator Connection Handler")]

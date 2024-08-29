@@ -7,9 +7,10 @@ using System.IO.Compression;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using maxprofitness.login;
+//using maxprofitness.login;
+using MaxProFitness.Sdk;
 
-namespace MaxProFitness.Sdk
+namespace maxprofitness.login
 {
     [DisallowMultipleComponent]
     [AddComponentMenu("MAXPRO Fitness/Max Pro Controller")]

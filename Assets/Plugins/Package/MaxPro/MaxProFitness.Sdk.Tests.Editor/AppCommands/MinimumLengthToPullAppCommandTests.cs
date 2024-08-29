@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
-
-namespace MaxProFitness.Sdk
+using MaxProFitness.Sdk;
+namespace maxprofitness.login
 {
     [TestOf(typeof(MinimumLengthToPullAppCommand))]
     public class MinimumLengthToPullAppCommandTests : AppCommandTestsBase<MinimumLengthToPullAppCommand>

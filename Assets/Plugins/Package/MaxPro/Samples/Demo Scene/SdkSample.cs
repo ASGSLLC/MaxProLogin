@@ -6,9 +6,8 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using maxprofitness.login;
 
-namespace MaxProFitness.Samples
+namespace maxprofitness.login
 {
     public sealed class SdkSample : MonoBehaviour
     {

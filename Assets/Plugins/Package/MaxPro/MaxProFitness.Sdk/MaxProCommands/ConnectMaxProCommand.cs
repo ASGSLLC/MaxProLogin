@@ -1,7 +1,8 @@
 using System;
 using UnityEngine.Scripting;
+using MaxProFitness.Sdk;
+namespace maxprofitness.login
 
-namespace MaxProFitness.Sdk
 {
     /// <summary>
     ///     Response to <see cref="ConnectAppCommand"/>.
