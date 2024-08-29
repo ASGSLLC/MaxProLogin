@@ -1,7 +1,8 @@
 using System;
 using UnityEngine.Scripting;
+using MaxProFitness.Sdk;
 
-namespace MaxProFitness.Sdk
+namespace maxprofitness.login
 {
     /// <summary>
     ///     Before executing this command you must first select the correct knob position. Be sure to do it in the same order as the

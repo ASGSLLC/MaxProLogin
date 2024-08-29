@@ -1,8 +1,8 @@
 ﻿using System;
 using UnityEngine.Scripting;
-using maxprofitness.login;
+//using maxprofitness.login;
 
-namespace MaxProFitness.Sdk
+namespace maxprofitness.login
 {
     [Preserve]
     public class InvalidConnectionHandler : IMaxProConnectionHandler

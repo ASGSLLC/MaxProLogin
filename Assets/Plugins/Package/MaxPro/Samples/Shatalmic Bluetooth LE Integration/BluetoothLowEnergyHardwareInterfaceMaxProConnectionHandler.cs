@@ -4,11 +4,10 @@ using System.Diagnostics;
 using UnityEngine.Android;
 using UnityEngine.Scripting;
 using MaxProFitness.Integrations;
+using maxprofitness.login;
 
-namespace maxprofitness.login
-{
     [Preserve]
-    public class BluetoothLowEnergyHardwareInterfaceConnectionHandler : IMaxProConnectionHandler
+    public sealed class BluetoothLowEnergyHardwareInterfaceConnectionHandler : IMaxProConnectionHandler
     {
         public void Initialize(Action onSucceed, Action<string> onFailed)
         {
@@ -164,4 +163,3 @@ namespace maxprofitness.login
 
 
     }
-}

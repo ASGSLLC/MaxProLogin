@@ -1,7 +1,8 @@
 using System;
 using UnityEngine.Scripting;
+using MaxProFitness.Sdk;
 
-namespace MaxProFitness.Sdk
+namespace maxprofitness.login
 {
     /// <summary>
     ///     Sent by the device automatically after connecting while game mode is off. App must respond to the received data as it is.

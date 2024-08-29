@@ -1,7 +1,8 @@
 using System;
 using UnityEngine.Scripting;
+using MaxProFitness.Sdk;
 
-namespace MaxProFitness.Sdk
+namespace maxprofitness.login
 {
     /// <summary>
     ///     Response to <see cref="DisconnectAppCommand"/>.

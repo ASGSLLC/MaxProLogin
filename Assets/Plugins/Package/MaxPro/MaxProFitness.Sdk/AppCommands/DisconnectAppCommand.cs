@@ -1,7 +1,8 @@
 using System;
 using UnityEngine.Scripting;
+using MaxProFitness.Sdk;
 
-namespace MaxProFitness.Sdk
+namespace maxprofitness.login
 {
     /// <summary>
     ///     Command to disconnect from the device. It is expected to receive a <see cref="DisconnectMaxProCommand"/> as response.

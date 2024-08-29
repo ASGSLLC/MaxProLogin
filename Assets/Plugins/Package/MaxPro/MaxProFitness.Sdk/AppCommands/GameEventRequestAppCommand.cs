@@ -1,7 +1,8 @@
 using System;
 using UnityEngine.Scripting;
+using MaxProFitness.Sdk;
 
-namespace MaxProFitness.Sdk
+namespace maxprofitness.login
 {
     /// <summary>
     ///     Command to turn game mode on and off. It is expected to receive a <see cref="GameEventRequestMaxProCommand"/> as response immediately and then a

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.Scripting;
-
-namespace MaxProFitness.Sdk
+using MaxProFitness.Sdk;
+namespace maxprofitness.login
 {
     /// <summary>
     ///     Sent by the device automatically every 0.04 seconds while game mode is on.
