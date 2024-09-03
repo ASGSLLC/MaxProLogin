@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2da8e011a9b9b0d4fbea47911e1af030, type: 3}
+  m_Script: {fileID: 11500000, guid: 13ad3f21210e41e49b5cb0e8725251af, type: 3}
   m_Name: SoundProperty_Rowing_Canoe_Obstacle_Small_Rock_01
   m_EditorClassIdentifier: 
   Sound: 313

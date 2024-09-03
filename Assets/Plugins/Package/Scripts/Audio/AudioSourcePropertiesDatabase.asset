@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e92f5e485dea22f4cb31aea989b8c656, type: 3}
+  m_Script: {fileID: 11500000, guid: 1cdf786ee502ccb4fb84031b407d7be4, type: 3}
   m_Name: AudioSourcePropertiesDatabase
   m_EditorClassIdentifier: 
   _minigameAudioSourcesList:
