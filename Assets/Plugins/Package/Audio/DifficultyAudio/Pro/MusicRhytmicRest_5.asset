@@ -12,14 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13ad3f21210e41e49b5cb0e8725251af, type: 3}
   m_Name: MusicRhytmicRest_5
   m_EditorClassIdentifier: 
-  Sound: 0
-  AudioClips: []
-  AudioMixerGroup: {fileID: 0}
-  Volume: 0.5
+  Sound: 229
+  AudioClips:
+  - {fileID: 8300000, guid: b1767ee69537f344ead2f84c29c39ede, type: 3}
+  - {fileID: 8300000, guid: 216d26629c37f0742bb2fec90f902971, type: 3}
+  - {fileID: 8300000, guid: 0f95d83d2b6cc8046ad671c71648c83b, type: 3}
+  - {fileID: 8300000, guid: aa3980548d4070e4ea2a0685beb59793, type: 3}
+  AudioMixerGroup: {fileID: 24328132, guid: 86a7353f2579d476fbaa7f161c2e5d00, type: 2}
+  Volume: 1
   Pitch: 1
-  SpatialBlend: 0.5
+  SpatialBlend: 0
   Loop: 0
   PersistentSound: 0
   _randomizePitch: 0
-  _minPitch: 0.8
-  _maxPitch: 1.2
+  _minPitch: 0.95
+  _maxPitch: 1.05

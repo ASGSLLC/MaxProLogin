@@ -14,9 +14,10 @@ namespace maxprofitness.login
         #region VARIABLES
 
 
-        private AudioMixer _audioMixer;
-        private GameObject soundPlayerPrefab;
-        private AudioSourcePropertiesDatabase audioSourcePropertiesDatabase;
+        public AudioSourcePropertiesDatabase audioSourcePropertiesDatabase;
+        public AudioMixer _audioMixer;
+        public GameObject soundPlayerPrefab;
+
         private bool _initialized;
 
 
@@ -65,9 +66,9 @@ namespace maxprofitness.login
         {
             base.Awake();
 
-            _audioMixer = Resources.Load<AudioMixer>("CompleteMainMix");
-            soundPlayerPrefab = Resources.Load<GameObject>("SharedSoundPlayer");
-            audioSourcePropertiesDatabase = Resources.Load<AudioSourcePropertiesDatabase>("AudioSourcePropertiesDatabase");
+            //_audioMixer = Resources.Load<AudioMixer>("CompleteMainMix");
+            //soundPlayerPrefab = Resources.Load<GameObject>("SharedSoundPlayer");
+            //audioSourcePropertiesDatabase = Resources.Load<AudioSourcePropertiesDatabase>("AudioSourcePropertiesDatabase");
 
             SoundManager.SetSoundPlayerPrefab(soundPlayerPrefab);
             SoundManager.Initialize(audioSourcePropertiesDatabase);

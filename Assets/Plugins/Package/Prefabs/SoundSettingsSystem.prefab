@@ -44,3 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4679dbfd8581ed6419931bf40e6f4c9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioSourcePropertiesDatabase: {fileID: 11400000, guid: 35eb9c451cce053478d83810a59c1a07, type: 2}
+  _audioMixer: {fileID: 24100000, guid: 86a7353f2579d476fbaa7f161c2e5d00, type: 2}
+  soundPlayerPrefab: {fileID: 6377998121666348810, guid: 557b979b3a8666a419577c9620a73ccd, type: 3}

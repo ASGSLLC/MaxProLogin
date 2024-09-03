@@ -195,7 +195,7 @@ public class LocalLeaderboard : MonoBehaviour {
                 collectedStats[i] = tempInfo;                
             }
 
-            //Debug.Log(collectedStats[i].name);
+            Debug.Log(collectedStats[i].name);
         }
 
         //Debug.Log(leaderboardEntryComparison);
@@ -278,7 +278,7 @@ public class LocalLeaderboard : MonoBehaviour {
                 collectedStats[i] = tempInfo;                
             }   
         }
-        //Debug.Log("LocalLeaderboard.cs // SortStats()//");
+        Debug.Log("LocalLeaderboard.cs // SortStats()//");
         //Update PlayerPref That Stores Leaderboard Values
         UpdateAndSetStatsString(isUpdating);
     }
@@ -446,7 +446,7 @@ public class LocalLeaderboard : MonoBehaviour {
     public void UpdateOnlineLeaderboards()
     //----------------------------------//
     {
-        /*
+        
         //Simply Loop Through The List And Add The Name And Score To The Display Text
         for (int i = 0; i < entries.Length && i < collectedStats.Count; i++)
         {
@@ -466,7 +466,7 @@ public class LocalLeaderboard : MonoBehaviour {
 
             //Debug.Log( "Collected Stats: " + collectedStats[i].name + " " + collectedStats[i].score);
         }
-        */
+        
         //Debug.Log(leaderboardEntryComparison);
         //Debug.Log("LocalLeaderboard.cs // UpdateLeaderBoardVisual()// Finished setting data loop");
 

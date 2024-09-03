@@ -12,14 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13ad3f21210e41e49b5cb0e8725251af, type: 3}
   m_Name: MusicRhytmic_3
   m_EditorClassIdentifier: 
-  Sound: 0
-  AudioClips: []
-  AudioMixerGroup: {fileID: 0}
-  Volume: 0.5
+  Sound: 214
+  AudioClips:
+  - {fileID: 8300000, guid: ecb304209a83eb04fb09c993fdb90d77, type: 3}
+  - {fileID: 8300000, guid: daa7691325e2739408d4a18da9ceb74c, type: 3}
+  - {fileID: 8300000, guid: aee4868a0358b3b469e686faed9ecb1c, type: 3}
+  AudioMixerGroup: {fileID: 24328132, guid: 86a7353f2579d476fbaa7f161c2e5d00, type: 2}
+  Volume: 1
   Pitch: 1
-  SpatialBlend: 0.5
+  SpatialBlend: 0
   Loop: 0
   PersistentSound: 0
   _randomizePitch: 0
-  _minPitch: 0.8
-  _maxPitch: 1.2
+  _minPitch: 0.95
+  _maxPitch: 1.05

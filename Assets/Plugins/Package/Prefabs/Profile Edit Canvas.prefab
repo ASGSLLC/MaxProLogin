@@ -2908,7 +2908,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 37.9
+  m_fontSize: 35.9
   m_fontSizeBase: 42
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3864,7 +3864,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -960, y: 757.42114}
+  m_AnchoredPosition: {x: -960, y: 649.1032}
   m_SizeDelta: {x: 1920, y: 1500}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1611637882661687891
@@ -5805,7 +5805,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 37.9
+  m_fontSize: 35.9
   m_fontSizeBase: 42
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -9919,21 +9919,21 @@ MonoBehaviour:
   pages: []
   profileNameText: []
   measurementSystem: {fileID: 3366170414431790349}
-  fullNameInput: {fileID: 0}
-  nicknameInput: {fileID: 0}
-  genderDropdown: {fileID: 0}
-  countryDropdown: {fileID: 0}
-  yearDropdown: {fileID: 0}
-  monthDropdown: {fileID: 0}
-  dayDropdown: {fileID: 0}
-  weightImperialDropdown: {fileID: 0}
-  weightMetricDropdown: {fileID: 0}
-  heightFeetDropdown: {fileID: 0}
-  heightInchesDropdown: {fileID: 0}
-  heightMetricDropdown: {fileID: 0}
-  goalDropdown: {fileID: 0}
-  fitnessLevelDropdown: {fileID: 0}
-  editPageProfileImage: {fileID: 0}
+  fullNameInput: {fileID: 4299460472532287228}
+  nicknameInput: {fileID: 1801455143606438871}
+  genderDropdown: {fileID: 2970434542574946123}
+  countryDropdown: {fileID: 2970434541819815479}
+  yearDropdown: {fileID: 1208823318479074614}
+  monthDropdown: {fileID: 2355732016176330918}
+  dayDropdown: {fileID: 4471938621165508248}
+  weightImperialDropdown: {fileID: 9027585144108234018}
+  weightMetricDropdown: {fileID: 5618568639785524750}
+  heightFeetDropdown: {fileID: 8017856717352046964}
+  heightInchesDropdown: {fileID: 3217467769971654342}
+  heightMetricDropdown: {fileID: 4985271099870474573}
+  goalDropdown: {fileID: 2970434540879637579}
+  fitnessLevelDropdown: {fileID: 2970434542178370379}
+  editPageProfileImage: {fileID: 2970434541514712532}
   fullNameText: {fileID: 0}
   nicknameText: {fileID: 0}
   emailText: {fileID: 0}
@@ -21045,8 +21045,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1162dea897c42fb4fb29fde4dcffe0f7, type: 2}
+  m_sharedMaterial: {fileID: -2332312588300325131, guid: 1162dea897c42fb4fb29fde4dcffe0f7, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -23222,8 +23222,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u200B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1162dea897c42fb4fb29fde4dcffe0f7, type: 2}
+  m_sharedMaterial: {fileID: -2332312588300325131, guid: 1162dea897c42fb4fb29fde4dcffe0f7, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -32079,7 +32079,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 5809128422902962175}
   m_Direction: 2
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.8654709
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
