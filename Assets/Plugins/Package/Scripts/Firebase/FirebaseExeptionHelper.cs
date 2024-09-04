@@ -1,4 +1,3 @@
-
 using System;
 #if FIREBASE
 using Firebase;
@@ -21,7 +20,8 @@ namespace maxprofitness.login
                 error = ex.GetBaseException().Message.ToString();
 
             return error;
-#endif
+
         }
+#endif
     }
 }
