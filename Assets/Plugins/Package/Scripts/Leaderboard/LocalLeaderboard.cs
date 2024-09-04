@@ -410,34 +410,6 @@ public class LocalLeaderboard : MonoBehaviour {
 
     #endregion
 
-    //-----------------------------------//
-    private void UpdateAirRunnerEntries()
-    //------------------------------------//
-    {
-        Debug.Log("UpdateAirRunnerEntries()");
-
-        for (int i = 0; i < collectedStats.Count; i++)
-        {
-            if (i > 24)
-            {
-                return;
-            }
-
-            /*
-            if (!leaderboardEntryComparison.Contains(entries[i].entryName + "," + entries[i].entryScore + " ") && entries[i].entryScore != 0)
-            {
-                leaderboardEntryComparison += entries[i].entryName + "," + entries[i].entryScore + " ";
-
-            }
-
-            entries[i].entryName = collectedStats[i].name;
-            entries[i].entryScore = collectedStats[i].score;
-            entries[i].SetEntry();
-             */
-        }
-
-    } // END UpdateAirRunnerEntries
-
 
     #region UPDATE ONLINE LEADERBOARDS
 
