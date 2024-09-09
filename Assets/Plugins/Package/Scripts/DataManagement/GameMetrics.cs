@@ -5,6 +5,8 @@ using UnityEngine;
 #if FIT_FIGHTER
 using _Project.FitFighter.RhythmRevamp.Scripts.Score;
 #endif
+using maxprofitness.login;
+
 [SerializeField]
 public class GameMetrics
 {

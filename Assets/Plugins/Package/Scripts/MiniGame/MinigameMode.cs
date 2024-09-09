@@ -1,4 +1,4 @@
-namespace _Project.App.Scripts.Minigames
+namespace maxprofitness.login
 {
     public enum MinigameMode
     {

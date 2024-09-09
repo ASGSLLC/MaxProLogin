@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using maxprofitness.login;
 
 [RequireComponent(typeof(MultiImageTargetGraphics))]
 public class MultiImageButton : Button

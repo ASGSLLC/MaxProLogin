@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using maxprofitness.login;
 
 public class RepeatingBackground : MonoBehaviour
 {

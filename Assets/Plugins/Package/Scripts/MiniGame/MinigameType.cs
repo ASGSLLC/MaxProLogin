@@ -1,4 +1,4 @@
-namespace MaxProFitness
+namespace maxprofitness.login
 {
     public enum MinigameType
     {

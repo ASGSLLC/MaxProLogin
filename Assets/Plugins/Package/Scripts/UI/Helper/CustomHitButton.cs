@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using maxprofitness.login;
 
 /// <summary>
 /// This class is used to create custom hitbox for buttons that uses personalized shapes

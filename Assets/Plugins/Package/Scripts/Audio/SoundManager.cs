@@ -1,8 +1,6 @@
-//using PainfulSmile;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using maxprofitness.login;
 
 namespace maxprofitness.login
 {

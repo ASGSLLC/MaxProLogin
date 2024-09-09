@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using maxprofitness.login;
 
 public class FitnessLevelDropDown : DropDownBase
 {    

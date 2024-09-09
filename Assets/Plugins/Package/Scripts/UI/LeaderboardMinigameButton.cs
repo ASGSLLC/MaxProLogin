@@ -1,10 +1,10 @@
-using _Project.App.Scripts.Minigames;
 using MaxProFitness;
 //using MaxProFitness.App.TrainingRoutines;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using maxprofitness.login;
 
 public class LeaderboardMinigameButton : MonoBehaviour
 {
