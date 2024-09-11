@@ -16,7 +16,7 @@ using _Project.FitFighter.RhythmRevamp.Scripts.Score;
 using FitFighter.RhythmRevamp.Scripts.Results;
 #endif
 
-#if ROWING_CANOE
+#if CANOE
 using _Project.RowingCanoe.Scripts;
 #endif
 

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 430bdf1b4a3b1114085ee4fa887ab026, type: 3}
+  m_Name: RhythmRoundWinSettings
+  m_EditorClassIdentifier: 
+  RhythmRoundWinConditions:
+  - RoundsWon: 0
+    GradeMessage: Keep growing!
+    BonusScore: 50
+  - RoundsWon: 1
+    GradeMessage: Good effort!
+    BonusScore: 500
+  - RoundsWon: 2
+    GradeMessage: Almost!
+    BonusScore: 1000
+  - RoundsWon: 3
+    GradeMessage: Great!
+    BonusScore: 1500
+  - RoundsWon: 4
+    GradeMessage: Incredible
+    BonusScore: 2000
+  - RoundsWon: 5
+    GradeMessage: Perfect!
+    BonusScore: 2500
