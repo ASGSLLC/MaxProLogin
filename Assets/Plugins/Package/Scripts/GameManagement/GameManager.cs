@@ -9,8 +9,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
 using maxprofitness.login;
-using UnityEngine.Android;
-using UnityEngine.Scripting;
 
 public class GameManager : MonoBehaviour
     {

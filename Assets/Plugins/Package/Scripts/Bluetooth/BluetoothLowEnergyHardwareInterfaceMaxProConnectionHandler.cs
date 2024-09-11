@@ -3,7 +3,7 @@ using System;
 using System.Diagnostics;
 using UnityEngine.Android;
 using UnityEngine.Scripting;
-using MaxProFitness.Integrations;
+//using MaxProFitness.Integrations;
 using maxprofitness.login;
 
     [Preserve]
