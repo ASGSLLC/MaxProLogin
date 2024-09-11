@@ -24,7 +24,9 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "MAXPRO_LOGIN"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }
