@@ -10,6 +10,10 @@ using UnityEngine.UI;
 //using _Project.RowingCanoe.Scripts;
 //using FitFighter.RhythmRevamp.Scripts;
 
+#if ROWING
+using maxprofitness.rowing;
+#endif
+
 namespace maxprofitness.login
 {
     /// <summary>
