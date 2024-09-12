@@ -9,7 +9,7 @@ namespace maxprofitness.login
     {
         #region VARIABLES
 
-#if !MAXPRO_LOGIN
+#if MAXPRO_LOGIN
     [SerializeField] private IntroCountdownController introController;
     [SerializeField] private HUD hud;
 #endif
@@ -39,7 +39,7 @@ namespace maxprofitness.login
         public void Init()
         //-----------------//
         {
-#if !MAXPRO_LOGIN
+#if MAXPRO_LOGIN
         if(hud == null)
         {
             hud = FindObjectOfType<HUD>();
@@ -59,7 +59,7 @@ namespace maxprofitness.login
         public void TurnOnCountdownIntro()
         //----------------------//
         {
-#if !MAXPRO_LOGIN
+#if MAXPRO_LOGIN
         StartCoroutine(introController.IPlayIntroCountdownAnimation(4));
         introController.GetComponent<CanvasGroup>().alpha = 1f;
         introController.GetComponent<Animator>().enabled = true;
