@@ -21,7 +21,7 @@ using maxprofitness.rowing;
 /// <summary>
 /// This class is responsible to set the information on the screen and manage the animations of the difficulty selection bar
 /// </summary>
-public sealed class DifficultySelectionView : MonoBehaviour
+public class DifficultySelectionView : MonoBehaviour
 {
     public CanvasGroup canvasGroup;
 
