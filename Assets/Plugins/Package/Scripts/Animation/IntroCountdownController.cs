@@ -4,16 +4,21 @@ using UnityEngine;
 //using _Project.RowingCanoe.Scripts.CanoeRefactor;
 //using _Project.RowingCanoe.Scripts;
 //using _Project.RowingCanoe.Scripts.Player;
+#if MAXPRO_LOGIN
+using maxprofitness.login;
+#endif
 
-namespace maxprofitness.login
+#if ROWING
+using maxprofitness.rowing;
+#endif
+
+public class IntroCountdownController : MonoBehaviour
 {
-    public sealed class IntroCountdownController : MonoBehaviour
-    {
-        #region VARIABLES
+    #region VARIABLES
 
 
-        [Header("Animation Component")]
-        [SerializeField] private Animator _animator;
+    [Header("Animation Component")]
+    [SerializeField] private Animator _animator;
 
 #if ROWING
         [SerializeField] private RowingCanoeGameManager canoeGameManager;
@@ -22,49 +27,49 @@ namespace maxprofitness.login
         private RowingTrackManager rowingTrackManager;
 #endif
 
-        private IntroAnimHelper introAnimHelper;
-        private static readonly int PlayAnimation = Animator.StringToHash("playAnimation");
-        private bool _canPlayIntroCountdown = true;
-        public bool isRowing = false;
-        public bool isFighter = false;
+    private IntroAnimHelper introAnimHelper;
+    private static readonly int PlayAnimation = Animator.StringToHash("playAnimation");
+    private bool _canPlayIntroCountdown = true;
+    public bool isRowing = false;
+    public bool isFighter = false;
 
 
-        [Header("Game Mode")]
-        [SerializeField] private MinigameType _minigameType;
+    [Header("Game Mode")]
+    [SerializeField] private MinigameType _minigameType;
 
 
-#endregion
+    #endregion
 
 
-        #region MONOBEHAVIOURS
+    #region MONOBEHAVIOURS
 
 
-        //-------------------//
-        private void Start()
-        //-------------------//
-        {
+    //-------------------//
+    private void Start()
+    //-------------------//
+    {
 #if ROWING
             opponent = FindObjectOfType<OpponentController>();
             canoeGameManager = FindObjectOfType<RowingCanoeGameManager>();
             rowingPlayerController = FindObjectOfType<RowingCanoeRacePlayerController>();
             rowingTrackManager = FindObjectOfType<RowingTrackManager>();
 #endif
-            introAnimHelper = FindObjectOfType<IntroAnimHelper>();
+        introAnimHelper = FindObjectOfType<IntroAnimHelper>();
 
-        } // END Start
-
-
-#endregion
+    } // END Start
 
 
-        #region INIT ROWING GAME
+    #endregion
 
 
-        //---------------------------------//
-        public void InitRowingGame()
-        //---------------------------------//
-        {
-            EnableGameManager();
+    #region INIT ROWING GAME
+
+
+    //---------------------------------//
+    public void InitRowingGame()
+    //---------------------------------//
+    {
+        EnableGameManager();
 #if ROWING
             CanoeEvents.RowingRaceStartedEvent?.Invoke();
 
@@ -75,116 +80,124 @@ namespace maxprofitness.login
             rowingTrackManager.hasStarted = true;
             rowingTrackManager.StartCoroutine(rowingTrackManager.GameplayLoopCoroutine());
 #endif
-        } // END InitRowingGame
+    } // END InitRowingGame
 
 
-#endregion
+    #endregion
 
 
-        #region ENABLE GAME MANAGER
-        /// <summary>
-        /// Sets GameManager.isGamePlaying = true && GameManager.isRecieveingInput = true
-        /// </summary>
-        //------------------------------//
-        private void EnableGameManager()
-        //------------------------------//
+    #region ENABLE GAME MANAGER
+
+
+    /// <summary>
+    /// Sets GameManager.isGamePlaying = true && GameManager.isRecieveingInput = true
+    /// </summary>
+    //------------------------------//
+    private void EnableGameManager()
+    //------------------------------//
+    {
+        GameManager.isGamePlaying = true;
+        GameManager.isRecieveingInput = true;
+
+    } // END EnableGameManager
+
+
+    #endregion
+
+
+    #region TURN OFF THIS ANIMATION OBJECT
+
+
+    //--------------------------------------//
+    public void HideIntroCountdownAnim()
+    //--------------------------------------//
+    {
+        this.gameObject.GetComponent<CanvasGroup>().alpha = 0f;
+        this.gameObject.GetComponent<CanvasGroup>().blocksRaycasts = true;
+        this.gameObject.GetComponent<CanvasGroup>().interactable = false;
+
+    } // END TurnOffThisAnimationObject
+
+
+    #endregion
+
+
+    #region INIT INTRO COUNTDOWN
+
+
+    //---------------------------------------//
+    public void InitializeIntroCountdown(int time)
+    //---------------------------------------//
+    {
+        //Debug.Log($"IntroCountdownController.cs // InitializeIntroCountdown() // [{typeof(IntroCountdownController)}] - Initializing countdown");
+        gameObject.SetActive(true);
+
+        if (_canPlayIntroCountdown)
         {
-            GameManager.isGamePlaying = true;
-            GameManager.isRecieveingInput = true;
+            _canPlayIntroCountdown = false;
 
-        } // END EnableGameManager
+            StartCoroutine(IPlayIntroCountdownAnimation(time));
+        }
+
+    } // END InitIntroCountdown
 
 
-        #endregion
+    #endregion
 
 
-        #region TURN OFF THIS ANIMATION OBJECT
-        //--------------------------------------//
-        public void HideIntroCountdownAnim()
-        //--------------------------------------//
+    #region HANDLE COUNTDOWN SOUND
+
+
+    //------------------------------------------//
+    private void HandleCountdownSound(int time)
+    //------------------------------------------//
+    {
+        Debug.Log("IntroCountdownController.cs // HandleCountdownSound() // This should trigger the voice announcer for each ");
+        switch (time)
         {
-            this.gameObject.GetComponent<CanvasGroup>().alpha = 0f;
-            this.gameObject.GetComponent<CanvasGroup>().blocksRaycasts = true;
-            this.gameObject.GetComponent<CanvasGroup>().interactable = false;
+            case 3:
+                {
+                    SoundManager.PlaySound(SharedGameSound.VOICE_ANNOUNCER_COUNTDOWN_3);
+                    break;
+                }
+            case 2:
+                {
+                    SoundManager.PlaySound(SharedGameSound.VOICE_ANNOUNCER_COUNTDOWN_2);
+                    break;
+                }
+            case 1:
+                {
+                    SoundManager.PlaySound(SharedGameSound.VOICE_ANNOUNCER_COUNTDOWN_1);
+                    break;
+                }
+        }
+    } // END HandleCountdown
 
-        } // END TurnOffThisAnimationObject
-        #endregion
+
+    #endregion
 
 
-        #region INIT INTRO COUNTDOWN
-        //---------------------------------------//
-        public void InitializeIntroCountdown(int time)
-        //---------------------------------------//
+    #region I PLAY INTRO COUNDOWN ANIMATION
+
+
+    //-------------------------------------------------------//
+    public IEnumerator IPlayIntroCountdownAnimation(int time)
+    //-------------------------------------------------------//
+    {
+        //Debug.Log("Playing intro");
+        yield return new WaitForSeconds(1);
+
+        time--;
+
+        if (time > 0)
         {
-            //Debug.Log($"IntroCountdownController.cs // InitializeIntroCountdown() // [{typeof(IntroCountdownController)}] - Initializing countdown");
-            gameObject.SetActive(true);
+            HandleCountdownSound(time);
 
-            if (_canPlayIntroCountdown)
-            {
-                _canPlayIntroCountdown = false;
-
-                StartCoroutine(IPlayIntroCountdownAnimation(time));
-            }
-
-        } // END InitIntroCountdown
-
-
-        #endregion
-
-
-        #region HANDLE COUNTDOWN SOUND
-
-
-        //------------------------------------------//
-        private void HandleCountdownSound(int time)
-        //------------------------------------------//
+            StartCoroutine(IPlayIntroCountdownAnimation(time));
+        }
+        else if (time == 0)
         {
-            Debug.Log("IntroCountdownController.cs // HandleCountdownSound() // This should trigger the voice announcer for each ");
-            switch (time)
-            {
-                case 3:
-                    {
-                        SoundManager.PlaySound(SharedGameSound.VOICE_ANNOUNCER_COUNTDOWN_3);
-                        break;
-                    }
-                case 2:
-                    {
-                        SoundManager.PlaySound(SharedGameSound.VOICE_ANNOUNCER_COUNTDOWN_2);
-                        break;
-                    }
-                case 1:
-                    {
-                        SoundManager.PlaySound(SharedGameSound.VOICE_ANNOUNCER_COUNTDOWN_1);
-                        break;
-                    }
-            }
-        } // END HandleCountdown
-
-
-        #endregion
-
-
-        #region I PLAY INTRO COUNDOWN ANIMATION
-
-
-        //-------------------------------------------------------//
-        public IEnumerator IPlayIntroCountdownAnimation(int time)
-        //-------------------------------------------------------//
-        {
-            //Debug.Log("Playing intro");
-            yield return new WaitForSeconds(1);
-
-            time--;
-
-            if (time > 0)
-            {
-                HandleCountdownSound(time);
-
-                StartCoroutine(IPlayIntroCountdownAnimation(time));
-            }
-            else if (time == 0)
-            {
-                //Debug.Log("Choosing GameType");
+            //Debug.Log("Choosing GameType");
 #if ROWING
                 rowingTrackManager = FindObjectOfType<RowingTrackManager>();
 
@@ -199,29 +212,27 @@ namespace maxprofitness.login
                     isRowing = false;
                 }
 #endif
-                if (isFighter == true)
-                {
-                    SoundManager.PlaySound(SharedGameSound.FF_VOICE_ANNOUNCER_FIGHT);
-                    //Debug.Log("IntroCountdownController.cs // IPlayIntroCountdownAnimation() // Playing FitFighter Sound");
-                }
-                else if (isRowing == true)
-                {
-                    SoundManager.PlaySound(SharedGameSound.RC_VOICE_ANNOUNCER_GO);
-                    //Debug.Log("IntroCountdownController.cs // IPlayIntroCountdownAnimation() // Playing Canoe Sound");
-                }
-
-                if(isRowing == true)
-                {
-                    InitRowingGame();
-                    Debug.Log("IntroCountdownController.cs // IPlayIntroCountdownAnimation() // Init Rowing game");
-                }
+            if (isFighter == true)
+            {
+                SoundManager.PlaySound(SharedGameSound.FF_VOICE_ANNOUNCER_FIGHT);
+                //Debug.Log("IntroCountdownController.cs // IPlayIntroCountdownAnimation() // Playing FitFighter Sound");
             }
-        } // END IPlayIntroCountdownAnimation
-        
-        
-#endregion
+            else if (isRowing == true)
+            {
+                SoundManager.PlaySound(SharedGameSound.RC_VOICE_ANNOUNCER_GO);
+                //Debug.Log("IntroCountdownController.cs // IPlayIntroCountdownAnimation() // Playing Canoe Sound");
+            }
+
+            if (isRowing == true)
+            {
+                InitRowingGame();
+                Debug.Log("IntroCountdownController.cs // IPlayIntroCountdownAnimation() // Init Rowing game");
+            }
+        }
+    } // END IPlayIntroCountdownAnimation
 
 
-    } // END IntroCountdownController.cs
+    #endregion
 
-} // END Namespace
+
+} // END IntroCountdownController.cs
