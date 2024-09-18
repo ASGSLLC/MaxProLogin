@@ -3,98 +3,97 @@ using System.Collections.Generic;
 using UnityEngine;
 //using MaxProFitness.UI;
 
-#if MAXPRO_LOGIN
-using maxprofitness.login;
-#endif
-
 #if ROWING
 using maxprofitness.rowing;
 #endif
 
-public class IntroAnimHelper : MonoBehaviour
+namespace maxprofitness.login
 {
-    #region VARIABLES
-
+    public class IntroAnimHelper : MonoBehaviour
+    {
+        #region VARIABLES
+        
 #if MAXPRO_LOGIN
-    [SerializeField] private IntroCountdownController introController;
-    [SerializeField] private HUD hud;
+        [SerializeField] private IntroCountdownController introController;
+        [SerializeField] private HUD hud;
 #endif
 
-    #endregion
+        #endregion
 
 
-    #region MONOBEHAVIOURS
+        #region MONOBEHAVIOURS
 
 
-    //-----------------//
-    private void Start()
-    //----------------//
-    {
-        Init();
+        //-----------------//
+        private void Start()
+        //----------------//
+        {
+            Init();
 
-    } // END Start
-
-
-    #endregion
+        } // END Start
 
 
-    #region INIT
+        #endregion
 
 
-    //----------------//
-    public void Init()
-    //-----------------//
-    {
+        #region INIT
+
+
+        //----------------//
+        public void Init()
+        //-----------------//
+        {
 #if MAXPRO_LOGIN
-        if (hud == null)
-        {
-            hud = FindObjectOfType<HUD>();
-        }
-        hud.gameObject.SetActive(false);
+            if (hud == null)
+            {
+                hud = FindObjectOfType<HUD>();
+            }
+            hud.gameObject.SetActive(false);
 #endif
-    } // END Init
+        } // END Init
 
 
-    #endregion
+        #endregion
 
 
-    #region  TURN ON/OFF INTRO
+        #region  TURN ON/OFF INTRO
 
 
-    //-----------------------//
-    public void TurnOnCountdownIntro()
-    //----------------------//
-    {
+        //-----------------------//
+        public void TurnOnCountdownIntro()
+        //----------------------//
+        {
 #if MAXPRO_LOGIN
-        StartCoroutine(introController.IPlayIntroCountdownAnimation(4));
-        introController.GetComponent<CanvasGroup>().alpha = 1f;
-        introController.GetComponent<Animator>().enabled = true;
+            StartCoroutine(introController.IPlayIntroCountdownAnimation(4));
+            introController.GetComponent<CanvasGroup>().alpha = 1f;
+            introController.GetComponent<Animator>().enabled = true;
 
-        if (hud == null)
-        {
-            hud = FindObjectOfType<HUD>();
-        }
-        if (hud != null)
-        {
-            hud.gameObject.SetActive(true);
-        }
+            if (hud == null)
+            {
+                hud = FindObjectOfType<HUD>();
+            }
+            if (hud != null)
+            {
+                hud.gameObject.SetActive(true);
+            }
 #endif
-    } // END TurnOnIntro
+        } // END TurnOnIntro
 
 
 
-    #endregion
+        #endregion
 
 
-    //-----------------------//
-    public void TurnOffCountdownIntro()
-    //----------------------//
-    {
+        //-----------------------//
+        public void TurnOffCountdownIntro()
+        //----------------------//
+        {
 #if !MAXPRO_LOGIN
         introController.GetComponent<CanvasGroup>().alpha = 0f;
         introController.GetComponent<Animator>().enabled = false;
 #endif
-    }
+        }
 
 
-} // END IntroAnimHelper.cs
+    } // END IntroAnimHelper.cs
+}

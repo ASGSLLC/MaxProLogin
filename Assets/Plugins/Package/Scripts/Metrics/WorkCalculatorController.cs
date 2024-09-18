@@ -3,50 +3,49 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using DG.Tweening;
-#if MAXPRO_LOGIN
-using maxprofitness.login;
-#endif
 
-public class WorkCalculatorController : MonoBehaviour
+namespace maxprofitness.login
 {
-    #region VARIABLES
+    public class WorkCalculatorController : MonoBehaviour
+    {
+        #region VARIABLES
 
 
-    public delegate void CanoeMovementUpdateHandler(float newMovement, ActionSide side);
-    public event CanoeMovementUpdateHandler OnCanoeMovementUpdated;
-    public event Action OnEndMovement;
+        public delegate void CanoeMovementUpdateHandler(float newMovement, ActionSide side);
+        public event CanoeMovementUpdateHandler OnCanoeMovementUpdated;
+        public event Action OnEndMovement;
 
-    [Tooltip("The offset will set the range based on the calibrated rest position")]
-    [SerializeField] private float _restPositionOffset;
+        [Tooltip("The offset will set the range based on the calibrated rest position")]
+        [SerializeField] private float _restPositionOffset;
 
-    private readonly List<Repetition> _repetitions = new List<Repetition>();
+        private readonly List<Repetition> _repetitions = new List<Repetition>();
 
-    private float _lastRightDistance;
-    private float _lastLeftDistance;
-    private float _currentRightDistance;
-    private float _currentLeftDistance;
-    private float _repInitialDistance;
-    private float _repFinalDistance;
-    private float _currentRightResistance = 10;
-    private float _currentLeftResistance = 10;
+        private float _lastRightDistance;
+        private float _lastLeftDistance;
+        private float _currentRightDistance;
+        private float _currentLeftDistance;
+        private float _repInitialDistance;
+        private float _repFinalDistance;
+        private float _currentRightResistance = 10;
+        private float _currentLeftResistance = 10;
 
-    private float _currentRightVelocity;
-    private float _maxRightVelocity;
-    private int _rightCountForEndingMovement;
-    private float _currentLeftVelocity;
-    private float _maxLeftVelocity;
-    private int _leftCountForEndingMovement;
-    private const int CountsToConfirmEndingMovement = 2;
+        private float _currentRightVelocity;
+        private float _maxRightVelocity;
+        private int _rightCountForEndingMovement;
+        private float _currentLeftVelocity;
+        private float _maxLeftVelocity;
+        private int _leftCountForEndingMovement;
+        private const int CountsToConfirmEndingMovement = 2;
 
-    private bool _isRightSideReset = true;
-    private bool _isLeftSideReset = true;
-    private bool _canComputeInput;
+        private bool _isRightSideReset = true;
+        private bool _isLeftSideReset = true;
+        private bool _canComputeInput;
 
-    [SerializeField] private PowerCalculator _rightPowerCalculator;
-    [SerializeField] private PowerCalculator _leftPowerCalculator;
+        [SerializeField] private PowerCalculator _rightPowerCalculator;
+        [SerializeField] private PowerCalculator _leftPowerCalculator;
 
-    public PowerCalculator LeftPowerCalculator => _leftPowerCalculator;
-    public PowerCalculator RightPowerCalculator => _rightPowerCalculator;
+        public PowerCalculator LeftPowerCalculator => _leftPowerCalculator;
+        public PowerCalculator RightPowerCalculator => _rightPowerCalculator;
 
 #if FIT_FIGHTER || CANOE
     [Header("Listening To")]
@@ -59,27 +58,27 @@ public class WorkCalculatorController : MonoBehaviour
     public List<int> AverageWorkByRepetition => _repetitions.Select(rep => rep.Work).ToList().CondenseList();
     public List<int> PowerList => _repetitions.Select(rep => rep.Power).ToList().CondenseList();
 #endif
-    public int CurrentRightKnob => (int)_currentRightResistance / 10;
-    public int CurrentLeftKnob => (int)_currentLeftResistance / 10;
-    
-    public List<Repetition> Repetitions => _repetitions;
-    private float MinResetThreshold => ((GameManager.leftDownPosition + GameManager.rightDownPosition) / 2) + _restPositionOffset;
-    private float MaxResetThreshold => ((GameManager.leftDownPosition + GameManager.rightDownPosition) / 2) - _restPositionOffset;
-    
-    
-    #endregion
+        public int CurrentRightKnob => (int)_currentRightResistance / 10;
+        public int CurrentLeftKnob => (int)_currentLeftResistance / 10;
+
+        public List<Repetition> Repetitions => _repetitions;
+        private float MinResetThreshold => ((GameManager.leftDownPosition + GameManager.rightDownPosition) / 2) + _restPositionOffset;
+        private float MaxResetThreshold => ((GameManager.leftDownPosition + GameManager.rightDownPosition) / 2) - _restPositionOffset;
 
 
-    #region MONOBEHAVIOURS
+        #endregion
 
 
-    //--------------------//
-    private void OnEnable()
-    //--------------------//
-    {
-        Initialize();
+        #region MONOBEHAVIOURS
 
-        GameManager.OnInputUpdated += HandleInputReceived;
+
+        //--------------------//
+        private void OnEnable()
+        //--------------------//
+        {
+            Initialize();
+
+            GameManager.OnInputUpdated += HandleInputReceived;
 #if CANOE || FIT_FIGHTER
         AppEvents.RepetitionExecutedEvent += HandleRepetitionExecuted;
 
@@ -90,14 +89,14 @@ public class WorkCalculatorController : MonoBehaviour
             _canComputeInput = true;
         }
 #endif
-    } // END OnEnable
+        } // END OnEnable
 
 
-    //----------------------//
-    private void OnDisable()
-    //----------------------//
-    {
-        GameManager.OnInputUpdated -= HandleInputReceived;
+        //----------------------//
+        private void OnDisable()
+        //----------------------//
+        {
+            GameManager.OnInputUpdated -= HandleInputReceived;
 #if CANOE || FIT_FIGHTER
         AppEvents.RepetitionExecutedEvent -= HandleRepetitionExecuted;
 
@@ -106,101 +105,101 @@ public class WorkCalculatorController : MonoBehaviour
             _finishedIntroductionChannel.OnEventRaised -= (value) => _canComputeInput = value;
         }
 #endif
-    } // END OnDisable
+        } // END OnDisable
 
 
-    //----------------------//
-    private void OnDestroy()
-    //----------------------//
-    {
-        GameManager.OnInputUpdated -= HandleInputReceived;
+        //----------------------//
+        private void OnDestroy()
+        //----------------------//
+        {
+            GameManager.OnInputUpdated -= HandleInputReceived;
 
-    } // END OnDestroy
-
-
-    #endregion
+        } // END OnDestroy
 
 
-    #region INITIALIZE
+        #endregion
 
 
-    //---------------------//
-    public void Initialize()
-    //---------------------//
-    {
-        _rightPowerCalculator.Initialize();
-        _leftPowerCalculator.Initialize();
-
-    } // END Initialize
-    
-    
-    #endregion
+        #region INITIALIZE
 
 
-    #region INPUT
+        //---------------------//
+        public void Initialize()
+        //---------------------//
+        {
+            _rightPowerCalculator.Initialize();
+            _leftPowerCalculator.Initialize();
+
+        } // END Initialize
 
 
-    //------------------------------------------------------//
-    private void HandleInputReceived(float left, float right)
-    //------------------------------------------------------//
-    {
-        //Debug.Log("WorkCalculatorController//HandleInputReceived//");
-
-        UpdateHandleState();
-        OnInputReceived();
-
-    } // END HandleInputReceived
+        #endregion
 
 
-    //---------------------------//
-    public void OnInputReceived()
-    //---------------------------//
-    {
-        UpdateVelocities();
-        UpdateWorkPeakAndAverage();
-
-    } // END OnInputReceived
-    
-    
-    #endregion
+        #region INPUT
 
 
-    #region GET WORK
+        //------------------------------------------------------//
+        private void HandleInputReceived(float left, float right)
+        //------------------------------------------------------//
+        {
+            //Debug.Log("WorkCalculatorController//HandleInputReceived//");
+
+            UpdateHandleState();
+            OnInputReceived();
+
+        } // END HandleInputReceived
 
 
-    //-------------------------//
-    public int GetAverageWork()
-    //------------------------//
-    {
-        return (int)_leftPowerCalculator.GetAverageWork(_currentLeftResistance) + (int)_rightPowerCalculator.GetAverageWork(_currentRightResistance);
+        //---------------------------//
+        public void OnInputReceived()
+        //---------------------------//
+        {
+            UpdateVelocities();
+            UpdateWorkPeakAndAverage();
 
-    } // END GetAverageWork
-
-
-    //-----------------------//
-    public int GetTotalWork()
-    //----------------------//
-    {
-        return _leftPowerCalculator.TotalWork + _rightPowerCalculator.TotalWork;
-
-    } // END GetTotalWork
+        } // END OnInputReceived
 
 
-    //----------------------//
-    public int GetWorkPeak()
-    //---------------------//
-    {
-        return _leftPowerCalculator.WorkPeak >= _rightPowerCalculator.WorkPeak ? _leftPowerCalculator.WorkPeak : _rightPowerCalculator.WorkPeak;
-
-    } // END GetWorkPeak
+        #endregion
 
 
-    //------------------------------------------//
-    public float GetAverageWork(ActionSide side)
-    //-----------------------------------------//
-    {
+        #region GET WORK
+
+
+        //-------------------------//
+        public int GetAverageWork()
+        //------------------------//
+        {
+            return (int)_leftPowerCalculator.GetAverageWork(_currentLeftResistance) + (int)_rightPowerCalculator.GetAverageWork(_currentRightResistance);
+
+        } // END GetAverageWork
+
+
+        //-----------------------//
+        public int GetTotalWork()
+        //----------------------//
+        {
+            return _leftPowerCalculator.TotalWork + _rightPowerCalculator.TotalWork;
+
+        } // END GetTotalWork
+
+
+        //----------------------//
+        public int GetWorkPeak()
+        //---------------------//
+        {
+            return _leftPowerCalculator.WorkPeak >= _rightPowerCalculator.WorkPeak ? _leftPowerCalculator.WorkPeak : _rightPowerCalculator.WorkPeak;
+
+        } // END GetWorkPeak
+
+
+        //------------------------------------------//
+        public float GetAverageWork(ActionSide side)
+        //-----------------------------------------//
+        {
 #if !CANOE || !FIT_FIGHTER
-        float averageWork = 0;
+            float averageWork = 0;
 #elif CANOE || FIT_FIGHTER
         float averageWork;
 
@@ -219,17 +218,17 @@ public class WorkCalculatorController : MonoBehaviour
                 break;
         }
 #endif
-        return averageWork;
+            return averageWork;
 
-    } // END GetAverageWork
+        } // END GetAverageWork
 
 
-    //-----------------------------------//
-    public float GetWork(ActionSide side)
-    //----------------------------------//
-    {
+        //-----------------------------------//
+        public float GetWork(ActionSide side)
+        //----------------------------------//
+        {
 #if !CANOE || !FIT_FIGHTER
-        float work = 0;
+            float work = 0;
 #elif CANOE || FIT_FIGHTER
 
         float work;
@@ -255,86 +254,86 @@ public class WorkCalculatorController : MonoBehaviour
                 break;
         }
 #endif
-        return work;
+            return work;
 
-    } // END GetWork
-
-
-    #endregion
+        } // END GetWork
 
 
-    #region GET CALORIES BURNED
+        #endregion
 
 
-    //----------------------------//
-    public int GetCaloriesBurned()
-    //---------------------------//
-    {
-        float caloriesBurned = 0;
+        #region GET CALORIES BURNED
 
-        Gender gender = Gender.Male;
 
-        if (UserDataManager.loadedData != null)
+        //----------------------------//
+        public int GetCaloriesBurned()
+        //---------------------------//
         {
-            gender = UserDataManager.loadedData.gender;
-        }
+            float caloriesBurned = 0;
 
-        // float userWeight = _userInfo.Weight;
-        //float userHeight = _userInfo.Height;
-        // int userAge = _userInfo.Age;
+            Gender gender = Gender.Male;
 
-        float userWeight = 70;
-        float userHeight = 171;
-        int userAge = 25;
+            if (UserDataManager.loadedData != null)
+            {
+                gender = UserDataManager.loadedData.gender;
+            }
 
-        float exerciseMet = 4;
+            // float userWeight = _userInfo.Weight;
+            //float userHeight = _userInfo.Height;
+            // int userAge = _userInfo.Age;
 
-        foreach (Repetition repetition in _repetitions)
+            float userWeight = 70;
+            float userHeight = 171;
+            int userAge = 25;
+
+            float exerciseMet = 4;
+
+            foreach (Repetition repetition in _repetitions)
+            {
+                float power = repetition.Power;
+                float repTime = repetition.TimeInSeconds;
+
+                float powerMetFactor = power switch
+                {
+                    float n when (n <= 74) => -1,
+                    float n when (n >= 75 && n <= 149) => 0,
+                    float n when (n >= 150 && n <= 299) => 3,
+                    _ => 4,
+                };
+
+                float bmrDays = gender switch
+                {
+                    Gender.Female => (10 * userWeight) + (6.25f * userHeight) - (5 * userAge) - 161,
+                    _ => (10 * userWeight) + (6.25f * userHeight) - (5 * userAge) + 5,
+                };
+
+                float calcOriginalMet = exerciseMet + powerMetFactor;
+                float md = bmrDays / 1440;
+                float kl = md / 5;
+                float lm = (kl / userWeight) * 1000;
+                float metFixedMetcbi = calcOriginalMet * (3.5f / lm);
+                float calsByMinute = (0.0175f * metFixedMetcbi) * userWeight;
+
+                caloriesBurned += calsByMinute * (repTime / 60);
+            }
+
+            Debug.Log($"[{nameof(WorkCalculatorController)}] - Calories burned: {caloriesBurned}");
+
+            return Mathf.RoundToInt(caloriesBurned);
+
+        } // END GetCaloriesBurned
+
+
+        #endregion
+
+
+        #region GET INPUT VELOCITY
+
+
+        //--------------------------------------------//
+        public float GetInputVelocity(ActionSide side)
+        //-------------------------------------------//
         {
-            float power = repetition.Power;
-            float repTime = repetition.TimeInSeconds;
-
-            float powerMetFactor = power switch
-            {
-                float n when (n <= 74) => -1,
-                float n when (n >= 75 && n <= 149) => 0,
-                float n when (n >= 150 && n <= 299) => 3,
-                _ => 4,
-            };
-
-            float bmrDays = gender switch
-            {
-                Gender.Female => (10 * userWeight) + (6.25f * userHeight) - (5 * userAge) - 161,
-                _ => (10 * userWeight) + (6.25f * userHeight) - (5 * userAge) + 5,
-            };
-
-            float calcOriginalMet = exerciseMet + powerMetFactor;
-            float md = bmrDays / 1440;
-            float kl = md / 5;
-            float lm = (kl / userWeight) * 1000;
-            float metFixedMetcbi = calcOriginalMet * (3.5f / lm);
-            float calsByMinute = (0.0175f * metFixedMetcbi) * userWeight;
-
-            caloriesBurned += calsByMinute * (repTime / 60);
-        }
-
-        Debug.Log($"[{nameof(WorkCalculatorController)}] - Calories burned: {caloriesBurned}");
-
-        return Mathf.RoundToInt(caloriesBurned);
-
-    } // END GetCaloriesBurned
-
-
-    #endregion
-
-
-    #region GET INPUT VELOCITY
-
-
-    //--------------------------------------------//
-    public float GetInputVelocity(ActionSide side)
-    //-------------------------------------------//
-    {
 #if CANOE || FIT_FIGHTER
         switch (side)
         {
@@ -352,23 +351,23 @@ public class WorkCalculatorController : MonoBehaviour
         float inputVelocity = _leftPowerCalculator.GetAverageVelocity();
         inputVelocity += _rightPowerCalculator.GetAverageVelocity();
 #elif !CANOE || !FIT_FIGHTER
-        float inputVelocity = 0;
+            float inputVelocity = 0;
 #endif
-        return inputVelocity / 2f;
+            return inputVelocity / 2f;
 
-    } // END GetInputVelocity
-
-
-    #endregion
+        } // END GetInputVelocity
 
 
-    #region CLEAR DATA
+        #endregion
 
 
-    //------------------------------------//
-    public void ClearData(ActionSide side)
-    //------------------------------------//
-    {
+        #region CLEAR DATA
+
+
+        //------------------------------------//
+        public void ClearData(ActionSide side)
+        //------------------------------------//
+        {
 #if CANOE || FIT_FIGHTER
         switch (side)
         {
@@ -385,78 +384,78 @@ public class WorkCalculatorController : MonoBehaviour
                 break;
         }
 #endif
-    } // END ClearData
+        } // END ClearData
 
 
-    #endregion
+        #endregion
 
 
-    #region CHECK FOR ENDING MOVEMENT
+        #region CHECK FOR ENDING MOVEMENT
 
 
-    //----------------------------------//
-    public void CheckForEndingMovement()
-    //----------------------------------//
-    {
+        //----------------------------------//
+        public void CheckForEndingMovement()
+        //----------------------------------//
+        {
 #if CANOE || FIT_FIGHTER
         _currentLeftVelocity = _leftPowerCalculator.GetCurrentVelocity();
         _currentRightVelocity = _rightPowerCalculator.GetCurrentVelocity();
 #endif
-        if (_currentLeftVelocity >= _maxLeftVelocity)
-        {
-            _maxLeftVelocity = _currentLeftVelocity;
-            _leftCountForEndingMovement = 0;
-        }
-        else
-        {
-            _leftCountForEndingMovement++;
-            _maxLeftVelocity = _currentLeftVelocity;
-
-            if (_leftCountForEndingMovement >= CountsToConfirmEndingMovement || _currentLeftVelocity < 0.1f)
+            if (_currentLeftVelocity >= _maxLeftVelocity)
             {
+                _maxLeftVelocity = _currentLeftVelocity;
                 _leftCountForEndingMovement = 0;
-                _maxLeftVelocity = 0;
+            }
+            else
+            {
+                _leftCountForEndingMovement++;
+                _maxLeftVelocity = _currentLeftVelocity;
+
+                if (_leftCountForEndingMovement >= CountsToConfirmEndingMovement || _currentLeftVelocity < 0.1f)
+                {
+                    _leftCountForEndingMovement = 0;
+                    _maxLeftVelocity = 0;
+                    OnEndMovement?.Invoke();
+                }
+            }
+
+            if (_currentRightVelocity >= _maxRightVelocity)
+            {
+                _maxRightVelocity = _currentRightVelocity;
+                _rightCountForEndingMovement = 0;
+            }
+            else
+            {
+                _rightCountForEndingMovement++;
+                _maxRightVelocity = _currentRightVelocity;
+
+                if (_rightCountForEndingMovement < CountsToConfirmEndingMovement && !(_currentRightVelocity < 0.1f))
+                {
+                    return;
+                }
+
+                _rightCountForEndingMovement = 0;
+                _maxRightVelocity = 0;
                 OnEndMovement?.Invoke();
             }
-        }
 
-        if (_currentRightVelocity >= _maxRightVelocity)
-        {
-            _maxRightVelocity = _currentRightVelocity;
-            _rightCountForEndingMovement = 0;
-        }
-        else
-        {
-            _rightCountForEndingMovement++;
-            _maxRightVelocity = _currentRightVelocity;
+        } // END CheckForEndingMovement
 
-            if (_rightCountForEndingMovement < CountsToConfirmEndingMovement && !(_currentRightVelocity < 0.1f))
+
+        #endregion
+
+
+        #region UPDATE HANDLE STATE
+
+
+        //------------------------------//
+        private void UpdateHandleState()
+        //------------------------------//
+        {
+            if (_canComputeInput)
             {
-                return;
+                CheckHandleDistanceAndReset();
             }
-
-            _rightCountForEndingMovement = 0;
-            _maxRightVelocity = 0;
-            OnEndMovement?.Invoke();
-        }
-
-    } // END CheckForEndingMovement
-
-
-    #endregion
-    
-    
-    #region UPDATE HANDLE STATE
-
-
-    //------------------------------//
-    private void UpdateHandleState()
-    //------------------------------//
-    {
-        if (_canComputeInput)
-        {
-            CheckHandleDistanceAndReset();
-        }
 #if CANOE || FIT_FIGHTER
         PowerCalculator powerCalculator;
 
@@ -486,97 +485,98 @@ public class WorkCalculatorController : MonoBehaviour
 
         powerCalculator.ClearData();
 #endif
-    } // END UpdateHandleState
+        } // END UpdateHandleState
 
 
-    #endregion
+        #endregion
 
 
-    #region UPDATE VELOCITIES
+        #region UPDATE VELOCITIES
 
 
-    //-----------------------------//
-    private void UpdateVelocities()
-    //-----------------------------//
-    {
-        //Debug.Log("WorkCalculatorController//UpdateVelocities//");
+        //-----------------------------//
+        private void UpdateVelocities()
+        //-----------------------------//
+        {
+            //Debug.Log("WorkCalculatorController//UpdateVelocities//");
 
-        _currentRightResistance = GameManager.gameInput.RightKnobPosition;
-        _currentLeftResistance = GameManager.gameInput.LeftKnobPosition;
-        _currentRightDistance = GameManager.gameInput.RightDistance;
-        _currentLeftDistance = GameManager.gameInput.LeftDistance;
+            _currentRightResistance = GameManager.gameInput.RightKnobPosition;
+            _currentLeftResistance = GameManager.gameInput.LeftKnobPosition;
+            _currentRightDistance = GameManager.gameInput.RightDistance;
+            _currentLeftDistance = GameManager.gameInput.LeftDistance;
 #if CANOE || FIT_FIGHTER
         _rightPowerCalculator.GenerateVelocity(_lastRightDistance / 1000, _currentRightDistance / 1000);
         _leftPowerCalculator.GenerateVelocity(_lastLeftDistance / 1000, _currentLeftDistance / 1000);
 #endif
-        _lastRightDistance = GameManager.gameInput.RightDistance;
-        _lastLeftDistance = GameManager.gameInput.LeftDistance;
+            _lastRightDistance = GameManager.gameInput.RightDistance;
+            _lastLeftDistance = GameManager.gameInput.LeftDistance;
 
-    } // END UpdateVelocities
-
-
-    #endregion
+        } // END UpdateVelocities
 
 
-    #region UPDATE WORK PEAK AND AVERAGE
+        #endregion
 
 
-    //-------------------------------------//
-    private void UpdateWorkPeakAndAverage()
-    //-------------------------------------//
-    {
+        #region UPDATE WORK PEAK AND AVERAGE
+
+
+        //-------------------------------------//
+        private void UpdateWorkPeakAndAverage()
+        //-------------------------------------//
+        {
 #if CANOE || FIT_FIGHTER
         _leftPowerCalculator.UpdateTotalWorkAndWorkPeak(_currentLeftResistance);
         _rightPowerCalculator.UpdateTotalWorkAndWorkPeak(_currentRightResistance);
 #endif
-    } // END UpdateWorkPeakAndAverage
+        } // END UpdateWorkPeakAndAverage
 
 
-    #endregion
+        #endregion
 
 
-    #region HANDLE REPETITION EXECUTED
+        #region HANDLE REPETITION EXECUTED
 
 
-    //---------------------------------------------------//
-    private void HandleRepetitionExecuted(Repetition rep)
-    //---------------------------------------------------//
-    {
-        _repetitions.Add(rep);
+        //---------------------------------------------------//
+        private void HandleRepetitionExecuted(Repetition rep)
+        //---------------------------------------------------//
+        {
+            _repetitions.Add(rep);
 
-    } // END HandleRepetitionExecuted
-
-
-    #endregion
+        } // END HandleRepetitionExecuted
 
 
-    #region CHECK HANDLE DISTANCE AND RESET
+        #endregion
 
 
-    //----------------------------------------//
-    private void CheckHandleDistanceAndReset()
-    //----------------------------------------//
-    {
+        #region CHECK HANDLE DISTANCE AND RESET
+
+
+        //----------------------------------------//
+        private void CheckHandleDistanceAndReset()
+        //----------------------------------------//
+        {
 #if CANOE || FIT_FIGHTER
         if (_leftHandleState != HandleState.Releasing && _rightHandleState != HandleState.Releasing)
         {
             return;
         }
 #endif
-        if (_currentLeftDistance <= MinResetThreshold)
-        {
-            _isLeftSideReset = true;
-        }
+            if (_currentLeftDistance <= MinResetThreshold)
+            {
+                _isLeftSideReset = true;
+            }
 
-        if (_currentRightDistance <= MinResetThreshold)
-        {
-            _isRightSideReset = true;
-        }
+            if (_currentRightDistance <= MinResetThreshold)
+            {
+                _isRightSideReset = true;
+            }
 
-    } // END CheckHandleDistanceAndReset
-
-
-    #endregion
+        } // END CheckHandleDistanceAndReset
 
 
-} // END WorkCalculatorController.cs
+        #endregion
+
+
+    } // END WorkCalculatorController.cs
+}
