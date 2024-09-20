@@ -8,7 +8,8 @@ using UnityEngine.Serialization;
 using UnityEngine.UI;
 using maxprofitness.login;
 
-
+namespace maxprofitness.shared
+{
     public class LeaderboardCanvasController : CanvasControllerBase
     {
         #region VARIABLES
@@ -51,8 +52,8 @@ using maxprofitness.login;
             Setup();
 
         } // END Initialize
-        
-        
+
+
         #endregion
 
 
@@ -66,8 +67,8 @@ using maxprofitness.login;
             _closeButton.onClick.AddListener(HandleBackButtonClicked);
 
         } // END Setup
-        
-        
+
+
         #endregion
 
 
@@ -76,15 +77,15 @@ using maxprofitness.login;
 
         //----------------------------------//
         public void HandleBackButtonClicked()
-    //---------------------------------//
-    {
-        SoundManager.PlaySound(SharedGameSound.APP_UI_BUTTON_CLICK);
-        //leaderboardView.TurnOffLeaderboardCanvas();
+        //---------------------------------//
+        {
+            SoundManager.PlaySound(SharedGameSound.APP_UI_BUTTON_CLICK);
+            //leaderboardView.TurnOffLeaderboardCanvas();
 
-    } // END HandleBackButtonClicked
+        } // END HandleBackButtonClicked
 
 
-    #endregion
+        #endregion
 
+    }
 }
-

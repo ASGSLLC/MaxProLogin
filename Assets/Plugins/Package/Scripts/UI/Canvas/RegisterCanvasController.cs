@@ -7,7 +7,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using maxprofitness.login;
+using maxprofitness.shared;
 
+namespace maxprofitness.login
+{
     public class RegisterCanvasController : CanvasControllerBase
     {
         public delegate void SendAccountHandler(AccountBasic account);
@@ -172,3 +175,4 @@ using maxprofitness.login;
             return true;
         }
     }
+}
