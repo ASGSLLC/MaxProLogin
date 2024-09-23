@@ -27,9 +27,8 @@ using UnityEditor.PackageManager;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using maxprofitness.login;
+using maxprofitness.shared;
 
-namespace maxprofitness.login 
-{
     public class UserDataManager : Singleton<UserDataManager>
     {
         #region VARIABLES
@@ -1980,7 +1979,6 @@ namespace maxprofitness.login
 
 
     } // END UserDataManager.cs
-}
 
 public enum Goal
 {

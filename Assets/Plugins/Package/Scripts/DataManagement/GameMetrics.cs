@@ -6,6 +6,7 @@ using UnityEngine;
 using _Project.FitFighter.RhythmRevamp.Scripts.Score;
 #endif
 using maxprofitness.login;
+using maxprofitness.shared;
 
 [SerializeField]
 public class GameMetrics

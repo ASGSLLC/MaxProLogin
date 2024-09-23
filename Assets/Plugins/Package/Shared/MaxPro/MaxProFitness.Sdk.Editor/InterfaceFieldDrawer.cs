@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace MaxProFitness.Sdk.Editor
+namespace maxprofitness.shared
 {
     [CustomPropertyDrawer(typeof(InterfaceField<>), true)]
     public sealed class InterfaceFieldDrawer : PropertyDrawer

@@ -1,7 +1,7 @@
 //using App.Scripts.Application.ExerciseVideoSystem;
 using TMPro;
 using UnityEngine;
-using maxprofitness.login;
+using maxprofitness.shared;
 
 public class ScrollableExercise : MonoBehaviour
 {

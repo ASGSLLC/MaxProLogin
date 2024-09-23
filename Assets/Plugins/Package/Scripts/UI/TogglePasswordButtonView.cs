@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using maxprofitness.login;
+using maxprofitness.shared;
 
 namespace _Project.App.Scripts.UI.Buttons
 {

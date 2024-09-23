@@ -1,9 +1,11 @@
+#if DOTWEEN
 using DG.Tweening;
+#endif
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-namespace maxprofitness.login
+namespace maxprofitness.shared
 {
     /// <summary>
     /// This class controls the position of the selection arrow while choosing between the difficulties
@@ -22,23 +24,29 @@ namespace maxprofitness.login
         public void MoveArrowToPosition(int positionIndex)
         {
             RectTransform rectTransform = GetComponent<RectTransform>();
+#if DOTWEEN
             rectTransform.DOAnchorPos(_arrowPositions[positionIndex], _movementDuration);
+#endif
         }
 
         public void ActivateLockedScoreView(string scoreText)
         {
+#if DOTWEEN
             Sequence sequence = DOTween.Sequence();
             sequence.Append(_scoreWithoutBackgroundCanvasGroup.DOFade(0f, ScoreFadeDuration)).SetEase(Ease.Linear);
             _scoreWithBackgroundValueText.SetText(scoreText);
             sequence.Append(_scoreWithBackgroundCanvasGroup.DOFade(1f, ScoreFadeDuration)).SetEase(Ease.Linear);
+#endif
         }
 
         public void DeactivateLockedScoreView(string scoreText)
         {
+#if DOTWEEN
             Sequence sequence = DOTween.Sequence();
             sequence.Append(_scoreWithBackgroundCanvasGroup.DOFade(0f, ScoreFadeDuration)).SetEase(Ease.Linear);
             _scoreWithoutBackgroundValueText.SetText(scoreText);
             sequence.Append(_scoreWithoutBackgroundCanvasGroup.DOFade(1f, ScoreFadeDuration)).SetEase(Ease.Linear);
+#endif
         }
     }
 }

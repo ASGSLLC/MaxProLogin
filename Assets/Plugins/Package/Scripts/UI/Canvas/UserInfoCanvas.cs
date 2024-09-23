@@ -12,6 +12,7 @@ using UnityEngine.SceneManagement;
 using Firebase.Database;
 using static SystemOfMeasurementHelper;
 using maxprofitness.login;
+using maxprofitness.shared;
 
 public class UserInfoCanvas : CanvasGroupUIBase
 {

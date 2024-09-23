@@ -1,5 +1,4 @@
 using UnityEngine.Scripting;
-using MaxProFitness.Sdk;
 
 namespace maxprofitness.shared
 {

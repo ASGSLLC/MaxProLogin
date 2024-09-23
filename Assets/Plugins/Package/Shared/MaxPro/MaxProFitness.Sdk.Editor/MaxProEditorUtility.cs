@@ -2,9 +2,8 @@
 using System;
 using UnityEditor;
 using UnityEngine;
-using maxprofitness.login;
 
-namespace MaxProFitness.Sdk.Editor
+namespace maxprofitness.shared
 {
     public static class MaxProEditorUtility
     {

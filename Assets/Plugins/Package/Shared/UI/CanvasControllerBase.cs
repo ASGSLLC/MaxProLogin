@@ -1,4 +1,6 @@
+#if DOTWEEN
 using DG.Tweening;
+#endif
 using UnityEngine;
 using maxprofitness.login;
 
@@ -17,8 +19,9 @@ namespace maxprofitness.shared
 
         private const float FadeDuration = .15f;
         private const float FadeScaleIn = 1.9f;
+#if DOTWEEN
         private const Ease FadeEase = Ease.OutExpo;
-
+#endif
 
         public CanvasType CanvasType => _canvasType;
 

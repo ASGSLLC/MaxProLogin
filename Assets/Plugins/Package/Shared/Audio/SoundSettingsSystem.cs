@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
-namespace maxprofitness.login
+namespace maxprofitness.shared
 {
     public class SoundSettingsSystem : Singleton<SoundSettingsSystem>
     {

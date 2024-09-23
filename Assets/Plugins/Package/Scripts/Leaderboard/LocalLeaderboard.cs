@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using maxprofitness.login;
+using maxprofitness.shared;
 
 //This Class Is Used To Make The Storage And Manipulation Of Two Variables Easier
 [System.Serializable]
@@ -85,7 +86,7 @@ public class LocalLeaderboard : MonoBehaviour {
     public void SubmitButton(string _userName, int _score, int _gameID)
     //----------------------------------//
     {
-        /*
+        
         hasUpdatedOnce = false;
         currentGameID = _gameID;
 
@@ -106,7 +107,7 @@ public class LocalLeaderboard : MonoBehaviour {
 
         //Start Sorting Method To Place Object In Correct Index Of List
         //SortStats(false);
-        */
+        
     }
     // END SubmitButton
 

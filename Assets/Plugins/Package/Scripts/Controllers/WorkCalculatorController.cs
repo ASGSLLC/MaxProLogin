@@ -2,9 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+#if DOTWEEN
 using DG.Tweening;
+#endif
+using maxprofitness.login;
+using maxprofitness.shared;
 
-namespace maxprofitness.shared
+namespace maxprofitness.login
 {
     public class WorkCalculatorController : MonoBehaviour
     {
@@ -270,17 +274,17 @@ namespace maxprofitness.shared
         //---------------------------//
         {
             float caloriesBurned = 0;
-
+            
             Gender gender = Gender.Male;
 
             if (UserDataManager.loadedData != null)
             {
                 gender = UserDataManager.loadedData.gender;
             }
-
-            // float userWeight = _userInfo.Weight;
+            
+            //float userWeight = _userInfo.Weight;
             //float userHeight = _userInfo.Height;
-            // int userAge = _userInfo.Age;
+            //int userAge = _userInfo.Age;
 
             float userWeight = 70;
             float userHeight = 171;
@@ -300,13 +304,13 @@ namespace maxprofitness.shared
                     float n when (n >= 150 && n <= 299) => 3,
                     _ => 4,
                 };
-
+                
                 float bmrDays = gender switch
                 {
                     Gender.Female => (10 * userWeight) + (6.25f * userHeight) - (5 * userAge) - 161,
                     _ => (10 * userWeight) + (6.25f * userHeight) - (5 * userAge) + 5,
                 };
-
+                
                 float calcOriginalMet = exerciseMet + powerMetFactor;
                 float md = bmrDays / 1440;
                 float kl = md / 5;

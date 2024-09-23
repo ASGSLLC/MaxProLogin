@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using MaxProFitness;
 using UnityEngine;
 using UnityEngine.Serialization;
+using maxprofitness.login;
 
-namespace maxprofitness.login
+namespace maxprofitness.shared
 {
     /// <summary>
     /// Used by the new fit fighter mode to configure the round's challenge level

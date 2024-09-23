@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace maxprofitness.login
+namespace maxprofitness.shared
 {
     public static class SoundManager
     {

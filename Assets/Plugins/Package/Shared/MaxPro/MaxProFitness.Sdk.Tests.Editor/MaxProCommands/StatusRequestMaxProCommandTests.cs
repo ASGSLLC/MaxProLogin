@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
-using MaxProFitness.Sdk;
-namespace maxprofitness.login
+
+namespace maxprofitness.shared
 {
     [TestOf(typeof(StatusRequestMaxProCommand))]
     public class StatusRequestMaxProCommandTests : MaxProCommandTestsBase<StatusRequestMaxProCommand>

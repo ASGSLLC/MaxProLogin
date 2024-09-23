@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
-using MaxProFitness.Sdk;
-namespace maxprofitness.login
+
+namespace maxprofitness.shared
 {
     [TestOf(typeof(GameEventRequestUpdateMaxProCommand))]
     public class GameEventRequestUpdateMaxProCommandTests : MaxProCommandTestsBase<GameEventRequestUpdateMaxProCommand>

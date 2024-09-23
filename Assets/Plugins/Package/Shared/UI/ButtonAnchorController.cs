@@ -1,4 +1,6 @@
+#if DOTWEEN
 using DG.Tweening;
+#endif
 using UnityEngine;
 
 namespace maxprofitness.shared
@@ -15,13 +17,17 @@ namespace maxprofitness.shared
         public void ExpandButtonMinSize()
         {
             RectTransform rectTransform = GetComponent<RectTransform>();
-            //rectTransform.DOAnchorMin(_pressedPositionAnchor, _movementDuration);
+#if DOTWEEN
+            rectTransform.DOAnchorMin(_pressedPositionAnchor, _movementDuration);
+#endif
         }
 
         public void ContractButtonMinSize()
         {
             RectTransform rectTransform = GetComponent<RectTransform>();
-            //rectTransform.DOAnchorMin(_defaultPositionAnchor, _movementDuration);
+#if DOTWEEN
+            rectTransform.DOAnchorMin(_defaultPositionAnchor, _movementDuration);
+#endif
         }
     }
 }

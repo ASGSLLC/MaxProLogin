@@ -10,6 +10,10 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using Firebase.Storage;
 using maxprofitness.login;
+using maxprofitness.shared;
+#if DOTWEEN
+using DG.Tweening;
+#endif
 
 public class UserProfilePage : CanvasGroupUIBase
 {
@@ -307,7 +311,7 @@ public class UserProfilePage : CanvasGroupUIBase
         // Month - Day - Year
         birthdayText.text = FormatBirthday(_date[1], _date[2], _date[0]);
 
-        //profileButton.DOFade(1f, 0.3f).OnComplete(() => { profileButton.interactable = true; profileButton.blocksRaycasts = true; });
+        profileButton.DOFade(1f, 0.3f).OnComplete(() => { profileButton.interactable = true; profileButton.blocksRaycasts = true; });
 
     } //END SetData
 
@@ -605,14 +609,14 @@ public class UserProfilePage : CanvasGroupUIBase
     public void ShowPage()
     //------------------------//
     {
-        /*
+#if DOTWEEN
         Sequence sequence = DOTween.Sequence();
         sequence.Append(profileButton.transform.DOPunchScale(new Vector3(0.3f,0.3f,0.3f), 0.2f));
         sequence.AppendCallback(() => 
         {
             Show();
         });
-       */
+#endif
     }//END ShowPage
 
 

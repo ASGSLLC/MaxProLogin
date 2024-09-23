@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace maxprofitness.login
+namespace maxprofitness.shared
 {
     [CreateAssetMenu(menuName = "Sound Manager/Audio Source Properties Database")]
     public class AudioSourcePropertiesDatabase : ScriptableObject

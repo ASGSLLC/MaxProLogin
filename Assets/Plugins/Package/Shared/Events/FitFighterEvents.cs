@@ -1,15 +1,10 @@
-//using _Project.App.Scripts.Application.Account.History;
-//using _Project.FitFighter.RhythmRevamp.Scripts.RhythmGamemode;
-//using FitFighter.RhythmRevamp.Scripts.Combat;
-//using FitFighter.RhythmRevamp.Scripts.Rounds;
-//using FitFighter.RhythmRevamp.Scripts.Score;
-//using MaxProFitness.History;
-//using MaxProFitness.Shared.Inputs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using maxprofitness.login;
+using maxprofitness.shared;
+
 public static class FitFighterEvents 
 {
     //-------------------------------------------------------//

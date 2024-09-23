@@ -11,6 +11,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using maxprofitness.login;
+using maxprofitness.shared;
 
     [AddComponentMenu("UI/Simple Scroll-Snap")]
     [RequireComponent(typeof(ScrollRect))]

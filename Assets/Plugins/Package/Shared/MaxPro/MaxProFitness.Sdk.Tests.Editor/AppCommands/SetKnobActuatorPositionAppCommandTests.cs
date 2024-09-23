@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
-using MaxProFitness.Sdk;
-namespace maxprofitness.login
+
+namespace maxprofitness.shared
 {
     [TestOf(typeof(SetKnobActuatorPositionAppCommand))]
     public class SetKnobActuatorPositionAppCommandTests : AppCommandTestsBase<SetKnobActuatorPositionAppCommand>

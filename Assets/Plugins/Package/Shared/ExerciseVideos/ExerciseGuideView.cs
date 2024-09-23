@@ -114,7 +114,7 @@ namespace maxprofitness.shared
             for (int i = 0; i < availableExercises.Count; i++)
             {
                 _scrollSnap.AddToBack(_scrollableExercisePrefab);
-                _scrollSnap.Panels[i].GetComponent<ScrollableExercise>().Initialize(_exercisesAvailableOnMinigame[i]);
+                //_scrollSnap.Panels[i].GetComponent<ScrollableExercise>().Initialize(_exercisesAvailableOnMinigame[i]);
             }
 
             UpdateExerciseUI();

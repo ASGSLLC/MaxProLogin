@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
-using MaxProFitness.Sdk;
 
-namespace maxprofitness.login
+namespace maxprofitness.shared
 {
     public abstract class MaxProCommandTestsBase<T>
         where T : struct, IMaxProCommand

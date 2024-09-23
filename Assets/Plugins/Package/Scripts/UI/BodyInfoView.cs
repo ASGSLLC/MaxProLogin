@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using maxprofitness.login;
+using maxprofitness.shared;
 
 namespace App.Scripts.UI.BodyInfo
 {

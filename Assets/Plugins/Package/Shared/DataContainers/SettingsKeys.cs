@@ -1,4 +1,4 @@
-namespace maxprofitness.login 
+namespace maxprofitness.shared
 {
     public static class SettingsKeys
     {
@@ -9,5 +9,3 @@ namespace maxprofitness.login
         public const string VoiceOverVolume = "VoiceOverVolume";
     }
 }
-
-

@@ -1,14 +1,9 @@
-//using _Project.App.Scripts.Minigames;
-//using App.Scripts.System.MinigameSelection;
-//using App.Scripts.UI.DifficultySelection.ScriptableObjects;
+#if DOTWEEN
 using DG.Tweening;
-//using MaxProFitness.SharedSound;
+#endif
+using UnityEngine.UI;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-//using _Project.App.Scripts.Highscore;
-//using _Project.RowingCanoe.Scripts;
-//using FitFighter.RhythmRevamp.Scripts;
 
 #if MAXPRO_LOGIN
 using maxprofitness.login;
@@ -214,7 +209,7 @@ namespace maxprofitness.shared
         private void HandleFirstButtonClick()
         //-----------------------------------//
         {
-            //SoundManager.PlaySound(SharedGameSound.APP_UI_BUTTON_CLICK);
+            SoundManager.PlaySound(SharedGameSound.APP_UI_BUTTON_CLICK);
 
             //new DifficultySelectionChangeEvent(MinigameDifficulty.Beginner).TryInvokeShared(this);
 
@@ -414,9 +409,11 @@ namespace maxprofitness.shared
 
         private void SwitchTextWithFade(string nextText)
         {
+            
             _difficultyText.DOFade(0, TextFadeDuration);
             _difficultyText.text = nextText;
             _difficultyText.DOFade(1, TextFadeDuration);
+            
         }
 
         private void UpdateDifficultyInformation()
@@ -455,9 +452,10 @@ namespace maxprofitness.shared
             holder.localScale = new Vector3(PopUpFadeScaleIn, PopUpFadeScaleIn, PopUpFadeScaleIn);
 
             canvasGroup.gameObject.SetActive(true);
-
+            
             canvasGroup.DOFade(1, PopUpFadeDuration).SetEase(Ease.OutExpo);
             holder.DOScale(1, PopUpFadeDuration).SetEase(Ease.OutExpo);
+            
         }
 
         /*

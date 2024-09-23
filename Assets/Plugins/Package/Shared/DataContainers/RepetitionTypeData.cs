@@ -1,6 +1,6 @@
 using System;
 
-namespace maxprofitness.login
+namespace maxprofitness.shared
 {
     /// <summary>
     /// Used to store the repetition data for the match

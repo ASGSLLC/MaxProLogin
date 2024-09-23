@@ -2,6 +2,7 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
 using maxprofitness.login;
+using maxprofitness.shared;
 
 public class MainMenuSceneManager : CanvasGroupUIBase
 {

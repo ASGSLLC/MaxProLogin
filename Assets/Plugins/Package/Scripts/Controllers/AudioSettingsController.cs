@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 using maxprofitness.login;
+using maxprofitness.shared;
 
 namespace App.Scripts.UI.Settings
 {

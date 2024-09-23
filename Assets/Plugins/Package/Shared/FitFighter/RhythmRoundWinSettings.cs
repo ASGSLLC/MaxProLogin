@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace maxprofitness.login
+namespace maxprofitness.shared
 {
     /// <summary>
     /// Used to store the round win data in the match

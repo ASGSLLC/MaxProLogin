@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 //using UnityEngine
-//using UnityEngine.InputSystem;
+using UnityEngine.InputSystem;
 //using MaxProFitness.Sdk;
 
 namespace maxprofitness.shared

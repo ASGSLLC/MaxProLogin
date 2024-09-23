@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using maxprofitness.login;
+using maxprofitness.shared;
 
 public class UserDataCache : MonoBehaviour
 {

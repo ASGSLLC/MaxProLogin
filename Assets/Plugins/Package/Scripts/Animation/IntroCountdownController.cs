@@ -4,6 +4,7 @@ using UnityEngine;
 #if ROWING
 using maxprofitness.rowing;
 #endif
+using maxprofitness.shared;
 
 namespace maxprofitness.login
 {

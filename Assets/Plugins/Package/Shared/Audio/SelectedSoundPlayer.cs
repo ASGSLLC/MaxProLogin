@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace maxprofitness.login
+namespace maxprofitness.shared
 {
     public sealed class SelectedSoundPlayer : MonoBehaviour
     {

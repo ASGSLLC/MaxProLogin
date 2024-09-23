@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using System.IO;
 using maxprofitness.login;
+using maxprofitness.shared;
 
 [Serializable]
 public class FirmwareDataChunk

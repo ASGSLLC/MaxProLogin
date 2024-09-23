@@ -30,6 +30,7 @@ using AppleAuth.Enums;
 using AppleAuth.Interfaces;
 using AppleAuth.Extensions;
 #endif
+using maxprofitness.shared;
 
 public class AuthenticationManager : Singleton<AuthenticationManager>
 {

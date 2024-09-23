@@ -1,4 +1,4 @@
-﻿namespace maxprofitness.login
+﻿namespace maxprofitness.shared
 {
     public enum SharedGameSound
     {
