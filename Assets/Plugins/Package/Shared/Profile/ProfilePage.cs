@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using maxprofitness.login;
-
+using maxprofitness.shared;
 public class ProfilePage : CanvasGroupUIBase
 {
     #region VARIABLES

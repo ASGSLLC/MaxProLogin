@@ -122,7 +122,7 @@ public class FirmwareUpdater : MonoBehaviour
     {
         //Debug.Log("FirmwareUpdate.cs // GetFirmwareDocument() // ");
 
-#if !FIREBASE_STORAGE
+#if !FIREBASE_STORAGE && ROWING
         FirestoreDatabaseManager.Instance.CheckDependecies(() =>
         {
             if (FirestoreDatabaseManager.db == null)

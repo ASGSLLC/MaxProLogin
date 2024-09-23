@@ -3,7 +3,7 @@ using System;
 using Firebase;
 #endif
 
-namespace maxprofitness.login
+namespace maxprofitness.shared
 {
     public class FirebaseExeptionHelper
     {

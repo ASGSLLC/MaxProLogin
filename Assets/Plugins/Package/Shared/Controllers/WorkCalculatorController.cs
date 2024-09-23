@@ -5,10 +5,9 @@ using UnityEngine;
 #if DOTWEEN
 using DG.Tweening;
 #endif
-using maxprofitness.login;
-using maxprofitness.shared;
 
-namespace maxprofitness.login
+
+namespace maxprofitness.shared
 {
     public class WorkCalculatorController : MonoBehaviour
     {
@@ -72,7 +71,7 @@ namespace maxprofitness.login
 
         #endregion
 
-
+        
         #region MONOBEHAVIOURS
 
 

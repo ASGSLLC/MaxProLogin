@@ -4,7 +4,7 @@ using Firebase.Storage;
 using System;
 using System.Collections;
 using UnityEngine;
-using maxprofitness.login;
+using maxprofitness.shared;
 public class CloudStorageManager : Singleton<CloudStorageManager>
 {
     #region VARIABLES

@@ -17,7 +17,17 @@
     "precompiledReferences": [
         "nunit.framework.dll",
         "DOTween.dll",
-        "DOTweenPro.dll"
+        "DOTweenPro.dll",
+        "Firebase.Analytics.dll",
+        "Firebase.App.dll",
+        "Firebase.Auth.dll",
+        "Firebase.Database.dll",
+        "Firebase.Firestore.dll",
+        "Firebase.Messaging.dll",
+        "Firebase.Messaging.Editor.dll",
+        "Firebase.Platform.dll",
+        "Firebase.Storage.dll",
+        "Firebase.TaskExtension.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [],
