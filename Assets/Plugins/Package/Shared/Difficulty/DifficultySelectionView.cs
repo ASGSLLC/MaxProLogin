@@ -83,10 +83,8 @@ namespace maxprofitness.shared
         private ButtonAnchorController FourthButtonController => _fourthDifficultyButton.GetComponent<ButtonAnchorController>();
         private ButtonAnchorController FifthButtonController => _fifthDifficultyButton.GetComponent<ButtonAnchorController>();
         private SelectionArrowPositionController ArrowPositionController => _selectionArrow.GetComponent<SelectionArrowPositionController>();
-#if ROWING
-        [SerializeField]private RowingTrackManager rowingTrackManager;
-#endif
 
+        [SerializeField] private RowingTrackManager rowingTrackManager;
 
         private void Awake()
         {
@@ -227,9 +225,8 @@ namespace maxprofitness.shared
             _currentButtonSelected = _firstDifficultyButton;
             SwitchTextWithFade(_firstDifficultyText);
             ArrowPositionController.MoveArrowToPosition(0);
-#if ROWING
+
             rowingTrackManager?.SetupRaceTrack(250, 2f, CurrentMinigameDifficulty);
-#endif
 
 #if FIT_FIGHTER
             if (rhythmGamemodeSystem != null)
@@ -269,9 +266,8 @@ namespace maxprofitness.shared
             _currentButtonSelected = _secondDifficultyButton;
             SwitchTextWithFade(_secondDifficultyText);
             ArrowPositionController.MoveArrowToPosition(1);
-#if ROWING
+
             rowingTrackManager?.SetupRaceTrack(500, 2.5f, CurrentMinigameDifficulty);
-#endif
 
 #if FIT_FIGHTER
             if (rhythmGamemodeSystem != null)
@@ -312,9 +308,8 @@ namespace maxprofitness.shared
             _currentButtonSelected = _thirdDifficultyButton;
             SwitchTextWithFade(_thirdDifficultyText);
             ArrowPositionController.MoveArrowToPosition(2);
-#if ROWING
+
             rowingTrackManager?.SetupRaceTrack(750, 3f, CurrentMinigameDifficulty);
-#endif
 
 #if FIT_FIGHTER
             if (rhythmGamemodeSystem != null)
@@ -355,9 +350,8 @@ namespace maxprofitness.shared
             _currentButtonSelected = _fourthDifficultyButton;
             SwitchTextWithFade(_fourthDifficultyText);
             ArrowPositionController.MoveArrowToPosition(3);
-#if ROWING
+
             rowingTrackManager?.SetupRaceTrack(1000, 3f, CurrentMinigameDifficulty);
-#endif
 
 #if FIT_FIGHTER
             if (rhythmGamemodeSystem != null)
@@ -391,9 +385,8 @@ namespace maxprofitness.shared
             _currentButtonSelected = _fifthDifficultyButton;
             SwitchTextWithFade(_fifthDifficultyText);
             ArrowPositionController.MoveArrowToPosition(4);
-#if ROWING
+
             rowingTrackManager?.SetupRaceTrack(1500, 3f, CurrentMinigameDifficulty);
-#endif
 
 #if FIT_FIGHTER
             if (rhythmGamemodeSystem != null)
@@ -426,10 +419,14 @@ namespace maxprofitness.shared
 
         private void HandlePlayButtonClick()
         {
+            if(rowingTrackManager == null)
+            {
+                rowingTrackManager = FindObjectOfType<RowingTrackManager>();
+            }
+            
 #if ROWING
             SoundManager.PlaySound(SharedGameSound.APP_UI_BUTTON_CLICK);
-            rowingTrackManager = FindObjectOfType<RowingTrackManager>();
-
+            
             CanvasController controller = FindObjectOfType<CanvasController>();
             controller?.CheckMaxProConnection();
 
