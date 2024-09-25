@@ -9,9 +9,10 @@ using UnityEngine.UI;
 //using Sirenix.OdinInspector;
 
 #if MAXPRO_LOGIN
-using maxprofitness.login;
-#endif
 
+#endif
+using maxprofitness.login;
+using maxprofitness.shared;
 public class GameOverCanvas : YScaleUIBase
 {
 #if AIR_RUNNER

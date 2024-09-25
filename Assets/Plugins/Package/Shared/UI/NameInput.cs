@@ -10,7 +10,9 @@ using System.Runtime.CompilerServices;
 #if UNITY_ANDROID
 using UnityEngine.Android;
 #endif
-namespace maxprofitness.login
+using maxprofitness.login;
+
+namespace maxprofitness.shared
 {
     public class NameInput : MonoBehaviour
     {

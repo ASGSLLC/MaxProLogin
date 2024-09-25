@@ -50,9 +50,10 @@ namespace maxprofitness.shared
         
         public event Action<float> OnElapsedTimeUpdated;
         public int finalScore;
-#if ROWING
+
         [SerializeField] private RowingCanoeGameManager rowingCanoeGameManager;
         [SerializeField] private RowingCanoeRacePlayerController _playerController;
+#if ROWING
         [SerializeField] private OpponentController _opponentController;
         [SerializeField] private CanvasController _canvasController;
 #endif
