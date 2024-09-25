@@ -1,12 +1,8 @@
 using System.Collections;
 using UnityEngine;
+using maxprofitness.login;
 
-#if ROWING
-using maxprofitness.rowing;
-#endif
-using maxprofitness.shared;
-
-namespace maxprofitness.login
+namespace maxprofitness.shared
 {
     public class IntroCountdownController : MonoBehaviour
     {
@@ -16,12 +12,11 @@ namespace maxprofitness.login
         [Header("Animation Component")]
         [SerializeField] private Animator _animator;
 
-#if ROWING
+
         [SerializeField] private RowingCanoeGameManager canoeGameManager;
         private OpponentController opponent;
         private RowingCanoeRacePlayerController rowingPlayerController;
         private RowingTrackManager rowingTrackManager;
-#endif
 
         private IntroAnimHelper introAnimHelper;
         private static readonly int PlayAnimation = Animator.StringToHash("playAnimation");
@@ -44,12 +39,10 @@ namespace maxprofitness.login
         private void Start()
         //-------------------//
         {
-#if ROWING
             opponent = FindObjectOfType<OpponentController>();
             canoeGameManager = FindObjectOfType<RowingCanoeGameManager>();
             rowingPlayerController = FindObjectOfType<RowingCanoeRacePlayerController>();
             rowingTrackManager = FindObjectOfType<RowingTrackManager>();
-#endif
             introAnimHelper = FindObjectOfType<IntroAnimHelper>();
 
         } // END Start
@@ -66,7 +59,7 @@ namespace maxprofitness.login
         //---------------------------------//
         {
             EnableGameManager();
-#if ROWING
+
             CanoeEvents.RowingRaceStartedEvent?.Invoke();
 
             canoeGameManager.hasStarted = true;
@@ -75,7 +68,7 @@ namespace maxprofitness.login
 
             rowingTrackManager.hasStarted = true;
             rowingTrackManager.StartCoroutine(rowingTrackManager.GameplayLoopCoroutine());
-#endif
+
         } // END InitRowingGame
 
 
@@ -194,7 +187,7 @@ namespace maxprofitness.login
             else if (time == 0)
             {
                 //Debug.Log("Choosing GameType");
-#if ROWING
+
                 rowingTrackManager = FindObjectOfType<RowingTrackManager>();
 
                 if(rowingTrackManager != null)
@@ -207,7 +200,7 @@ namespace maxprofitness.login
                     isFighter = true;
                     isRowing = false;
                 }
-#endif
+
                 if (isFighter == true)
                 {
                     SoundManager.PlaySound(SharedGameSound.FF_VOICE_ANNOUNCER_FIGHT);

@@ -50,7 +50,7 @@ namespace maxprofitness.shared
         public PowerCalculator LeftPowerCalculator => _leftPowerCalculator;
         public PowerCalculator RightPowerCalculator => _rightPowerCalculator;
 
-#if FIT_FIGHTER || CANOE
+
     [Header("Listening To")]
     [SerializeField] private BoolEventChannelSO _finishedIntroductionChannel;
     [Space(10)]
@@ -60,7 +60,7 @@ namespace maxprofitness.shared
 
     public List<int> AverageWorkByRepetition => _repetitions.Select(rep => rep.Work).ToList().CondenseList();
     public List<int> PowerList => _repetitions.Select(rep => rep.Power).ToList().CondenseList();
-#endif
+
         public int CurrentRightKnob => (int)_currentRightResistance / 10;
         public int CurrentLeftKnob => (int)_currentLeftResistance / 10;
 

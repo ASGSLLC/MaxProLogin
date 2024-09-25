@@ -14,8 +14,6 @@ namespace maxprofitness.shared
         public event System.Action OnDeviceConnected;
         public bool hasStarted = false;
 
-        [SerializeField] private RowingCanoeInputController rowingCanoeInputController;
-
 
         #endregion
 

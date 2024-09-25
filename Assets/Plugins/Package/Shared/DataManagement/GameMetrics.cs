@@ -92,7 +92,6 @@ public class GameMetrics
     [System.Serializable]
     public class RowingCanoeGameMetrics
     {
-#if ROWING_CANOE
         public string timeToFinish;
         public string date;
         public string[] leaderboardScore = new string[2];
@@ -113,7 +112,7 @@ public class GameMetrics
 
         public int[] workByRepetitions;
         public int[] powerList;
-#endif
+
     } // END RowingCanoeGameMetrics
 
 

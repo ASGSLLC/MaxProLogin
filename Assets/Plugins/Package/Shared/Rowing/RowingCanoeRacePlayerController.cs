@@ -1,10 +1,5 @@
 using UnityEngine;
 
-#if MAXPRO_LOGIN
-
-#endif
-
-
 namespace maxprofitness.shared
 {
     public class RowingCanoeRacePlayerController : RowingCanoePlayerControllerBase
@@ -60,7 +55,7 @@ namespace maxprofitness.shared
         #endregion
 
 
-#region HANDLE MOVEMENT UPDATED
+        #region HANDLE MOVEMENT UPDATED
 
 
         //-------------------------------------------------------------------------//
@@ -79,10 +74,10 @@ namespace maxprofitness.shared
         } // END HandleMovementUpdated
 
 
-#endregion
+        #endregion
 
 
-#region PROCESS NEW MOVEMENT
+        #region PROCESS NEW MOVEMENT
 
         //-------------------------------------------------------------------------//
         protected override void ProcessNewMovement(float newSpeed, ActionSide side)

@@ -1,13 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using MaxProFitness.UI;
 
-#if ROWING
-using maxprofitness.rowing;
-#endif
-
-namespace maxprofitness.login
+namespace maxprofitness.shared
 {
     public class IntroAnimHelper : MonoBehaviour
     {

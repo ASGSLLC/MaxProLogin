@@ -1,12 +1,4 @@
-//using _Project.RowingCanoe.Scripts.CanoeRefactor;
-//using MaxProFitness.History;
-//using MaxProFitness.Shared.Utilities;
-//using _Project._Shared.Scripts.Calculation;
-//using _Project.App.Scripts.Application.Account.History;
-//using _Project.App.Scripts.Minigames;
-//using _Project.RowingCanoe.Scripts.Player;
 using System;
-//using MaxProFitness;
 using System.Collections;
 using UnityEngine;
 using System.IO;
@@ -31,32 +23,29 @@ namespace maxprofitness.shared
         #region VARIABLES
 
 
-#if MAXPRO_LOGIN
-
         public event Action<MatchResult> OnGameFinished;        
 
         public MatchResult MatchResult => _matchResult;
         public MinigameDifficulty MinigameDifficulty => _selectedMinigameDifficulty;
-#if MAXPRO_LOGIN
+
         [SerializeField] private StartMinigameChannel _startMinigameChannel;
         [SerializeField] private EndMinigameChannel _endMinigameChannel;
         [SerializeField] private WorkCalculatorController _workCalculatorController;
-#endif
+
         private MinigameDifficulty _selectedMinigameDifficulty;
         private MatchResult _matchResult;
-        //private UserDataManager userDataManager;
+        private UserDataManager userDataManager;
         private MinigameMode _gameMode;
-#endif
         
         public event Action<float> OnElapsedTimeUpdated;
         public int finalScore;
 
         [SerializeField] private RowingCanoeGameManager rowingCanoeGameManager;
         [SerializeField] private RowingCanoeRacePlayerController _playerController;
-#if ROWING
+
         [SerializeField] private OpponentController _opponentController;
         [SerializeField] private CanvasController _canvasController;
-#endif
+
         [Header("Camera")]
         [SerializeField] private Animation _cameraAnimation;
 
@@ -82,13 +71,12 @@ namespace maxprofitness.shared
 
         public float trackLength;
 
-#if ROWING
         public OpponentController OpponentController => _opponentController;
         public float OpponentSpeed => OpponentController.DefaultSpeed;
 
-                public CanvasController canvasController;
+        public CanvasController canvasController;
         public CanoeController canoeController;
-#endif
+
         public bool OpponentFinishedFirst => _opponentFinishedFirst;
 
         public bool hasPlayerFinishedFirst;
@@ -107,12 +95,11 @@ namespace maxprofitness.shared
         //-------------------//
         {
             //Debug.Log("RowingTrackManager.cs // OnAwake() //");
-#if ROWING
+
             canoeController = FindObjectOfType<CanoeController>();
             canvasController = FindObjectOfType<CanvasController>();
-
             userDataManager = FindObjectOfType<UserDataManager>();
-#endif
+
             hasStarted = false;
 
         } // END OnAwake
@@ -154,7 +141,7 @@ namespace maxprofitness.shared
         private void CheckIfOpponentFinished()
         //------------------------------------//
         {
-#if ROWING
+
             if (!(_opponentController.DistanceCovered >= trackLength))
             {
                 if(rowingCanoeGameManager.hasStarted == false)
@@ -175,7 +162,6 @@ namespace maxprofitness.shared
                 _opponentFinishedFirst = true;
                 _opponentController.ToggleMovement(false);
             }
-#endif
 
         } // END CheckIfOpponentFinished
 
@@ -184,7 +170,6 @@ namespace maxprofitness.shared
         private void CheckIfPlayerFinished()
         //------------------------------------//
         {
-#if ROWING
             if (!(_playerController.DistanceCovered >= trackLength) && _opponentFinishedFirst == false)
             {
                 hasPlayerFinishedFirst = false;
@@ -195,7 +180,7 @@ namespace maxprofitness.shared
                 _opponentFinishedFirst = true;
                 _opponentController.ToggleMovement(false);
             }
-#endif
+
         } // END CheckIfPlayerFinished
 
 
@@ -210,15 +195,14 @@ namespace maxprofitness.shared
         //----------------------//
         {
             //Debug.Log("RowingTrackManager.cs // StartTrack() // ");
-/*
-if(userDataManager.rowingTrackManager == null)
-{
-    userDataManager.rowingTrackManager = this;
-}
-*/
-#if ROWING
+
+            if(userDataManager.rowingTrackManager == null)
+            {
+                userDataManager.rowingTrackManager = this;
+            }
+
             rowingCanoeGameManager.StartGame();
-#endif
+
         } // END StartTrack
 
 
@@ -232,7 +216,6 @@ if(userDataManager.rowingTrackManager == null)
         public IEnumerator GameplayLoopCoroutine()
         //-----------------------------------------//
         {
-#if ROWING
             while (_playerController.DistanceCovered < trackLength && hasStarted == true)
             {
                 UpdateDistances();
@@ -241,9 +224,7 @@ if(userDataManager.rowingTrackManager == null)
 
                 yield return null;
             }
-#elif !ROWING
-            yield return null;
-#endif
+
         } // END GameplayLoopCoroutine
 
 
@@ -252,7 +233,7 @@ if(userDataManager.rowingTrackManager == null)
 
 #region SETUP RACE TRACK
 
-#if MAXPRO_LOGIN
+
         //--------------------------//
         public void SetupRaceTrack(float _trackLength, float _opponentSpeed, MinigameDifficulty _difficulty)
         //--------------------------//
@@ -263,24 +244,24 @@ if(userDataManager.rowingTrackManager == null)
 
             SetTrackLength(_trackLength);
             SpawnFinishFlag();
-#if ROWING
+
             _opponentFinishedFirst = false;
             _opponentController.SetDefaultSpeed(_opponentSpeed);
             _opponentController.SetOpponentSpeedToDefault();
-#endif
+
             StartTrack();
 
         } // END SetupRaceTrack
-#endif
-
-#endregion
 
 
-            #region SET TRACK LENGTH
+        #endregion
 
 
-            //---------------------------------------//
-            private void SetTrackLength(float _length)
+        #region SET TRACK LENGTH
+
+
+        //---------------------------------------//
+        private void SetTrackLength(float _length)
         //---------------------------------------//
         {
             Debug.Log("RowingTrackManager.cs // SetTrackLength() // ");
@@ -290,10 +271,11 @@ if(userDataManager.rowingTrackManager == null)
         } // END SetTrackLength
 
 
-#endregion
+        #endregion
 
 
-#region SPAWN FINISH FLAG
+
+        #region SPAWN FINISH FLAG
 
 
         //----------------------------//
@@ -307,10 +289,10 @@ if(userDataManager.rowingTrackManager == null)
         } // END SpawnFinishFlag
 
 
-#endregion
+        #endregion
 
 
-#region PLAY INITIAL CAMERA ANIMATION
+        #region PLAY INITIAL CAMERA ANIMATION
 
 
         //---------------------------------------//
@@ -325,27 +307,25 @@ if(userDataManager.rowingTrackManager == null)
         } // END PlayInitialCameraAnimation
 
 
-#endregion
+        #endregion
 
 
-#region FINISH TRACK
+        #region FINISH TRACK
 
 
         //------------------------//
         private void FinishTrack()
         //------------------------//
         {
-#if MAXPRO_LOGIN
             GameManager.isGamePlaying = false;
             GameManager.isRecieveingInput = false;
-#endif
-#if ROWING
+
             CanoeEvents.RowingRaceEndedEvent?.Invoke();
 
             _playerController.SetPlayerSpeedAfterFinish();
             rowingCanoeGameManager.FinishGame();
             rowingCanoeGameManager.hasStarted = false;
-#endif
+
             CalculateScore();
             CalculatePlayerPace();
 
@@ -366,7 +346,7 @@ if(userDataManager.rowingTrackManager == null)
         //--------------------------//
         {
             //Debug.Log("Calculated Score: ");
-#if ROWING
+
             float timeThreshold = (trackLength / OpponentSpeed) * 2;
             float timeScore = (timeThreshold / _elapsedTime) * trackLength;
             float opponentTime = trackLength / (_opponentController.DefaultSpeed / 10);
@@ -374,7 +354,7 @@ if(userDataManager.rowingTrackManager == null)
             finalScore = _opponentFinishedFirst ? (int)trackLength : (int)timeScore;
 
             _canvasController.SetFinalScoreRaceMode(finalScore, _elapsedTime, opponentTime);
-#endif
+
         } // END CalculateScore
 
 
@@ -403,10 +383,9 @@ if(userDataManager.rowingTrackManager == null)
         private void UpdateDistances()
         //----------------------------//
         {
-#if ROWING
             _opponentController.ScaledDistanceCovered = _opponentController.DistanceCovered / _scaleFactor;
             _playerController.ScaledDistanceCovered = _playerController.DistanceCovered / _scaleFactor;
-#endif
+
         } // END UpdateDistances
 
 
@@ -414,9 +393,8 @@ if(userDataManager.rowingTrackManager == null)
         private void UpdateCurrentSpeed()
         //-------------------------------//
         {
-#if ROWING
             _canvasController.UpdateCurrentSpeed(_playerController.Speed);
-#endif
+
         } // END UpdateCurrentSpeed
 
 
@@ -440,7 +418,6 @@ if(userDataManager.rowingTrackManager == null)
         private void ProcessTimelines()
         //-----------------------------//
         {
-#if ROWING
             if (!OpponentFinishedFirst)
             {
                 CanoeEvents.WinRaceTimelineEvent?.Invoke();
@@ -449,7 +426,7 @@ if(userDataManager.rowingTrackManager == null)
             {
                 CanoeEvents.LoseRaceTimelineEvent?.Invoke();
             }
-#endif
+
         } // END ProcessTimelines
 
 
@@ -458,12 +435,11 @@ if(userDataManager.rowingTrackManager == null)
 
         #region SAVE/LOAD ROWING METRICS TO/FROM JSON
 
-#if MAXPRO_LOGIN
+
         //-----------------------------//
         public void SaveLocalRowingMetricsToJson(MatchResult _matchResult, RowingMetrics _rowingMetricsResult)
         //-----------------------------//
         {
-#if ROWING
             Debug.Log("RowingTrackManager.cs // SaveLocalRowingMetricsToJson() //");
 
             UserDataMeta profileData = UserDataManager.loadedData;
@@ -547,10 +523,10 @@ if(userDataManager.rowingTrackManager == null)
                 UserDataManager.Instance.RecieveRowingData();
                 UserDataManager.Instance.UpdateRowingLeaderboardEntries(_rowingMetrics.leaderboardScore[0].ToLower(), _rowingMetrics.leaderboardScore[1]);
             }
-#endif
+
         } // END SaveMetricsToJson
 
-#if ROWING
+
         //-----------------------------------//
         public static GameMetrics.RowingCanoeGameMetrics GetRowingMetricsFromJson()
         //-----------------------------------//
@@ -561,19 +537,18 @@ if(userDataManager.rowingTrackManager == null)
             return _rowingMetrics;
 
         } // END LoadRowingMetricsToJson
-#endif
+
 
         //---------------------------------------//
         public void LoadRowingStatsFromFirebase()
         //---------------------------------------//
         {
-#if ROWING
             UserDataManager.Instance.GetRowingLeaderboardEntries();
-#endif
-        }
-#endif
 
-#endregion
+        }
+
+
+        #endregion
 
 
             #region PROCESS MATCH RESULTS
@@ -583,7 +558,7 @@ if(userDataManager.rowingTrackManager == null)
             private void ProcessMatchResult()
         //------------------------------//
         {
-#if ROWING
+
             Minigame actualMinigame = new Minigame
             {
                 Difficulty = _selectedMinigameDifficulty,
@@ -631,7 +606,7 @@ if(userDataManager.rowingTrackManager == null)
             SaveLocalRowingMetricsToJson(matchResult, rowingMetrics);
 
             OnGameFinished?.Invoke(matchResult);
-#endif
+
         } // END ProcessMatchResults
         
         

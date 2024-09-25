@@ -33,9 +33,9 @@ using maxprofitness.shared;
     {
         #region VARIABLES
 
-#if ROWING_CANOE
-    public RowingTrackManager rowingTrackManager;
-#endif
+
+        public RowingTrackManager rowingTrackManager;
+
         public static Action OnUserDataInitialized;
 
         public LocalLeaderboard localLeaderboard;
@@ -328,8 +328,8 @@ using maxprofitness.shared;
         //----------------------------------//
         {
             Debug.Log("UserDataManager // GetLeaderboardData() // ");
-#if ROWING_CANOE
-#if !FIREBASE_STORAGE
+
+#if FIREBASE_STORAGE
             FirestoreDatabaseManager.Instance.CheckDependecies(() =>
             {
                 if (FirestoreDatabaseManager.db == null)
@@ -361,21 +361,20 @@ using maxprofitness.shared;
 
                 // Download the users data
                 FirestoreDatabaseManager.Instance.GetDocument(_leaderboardDocumentRef, OnSuccess, OnError);
-#endif
+
             });
 #endif
-
-        } // END GetRowingLeaderboardData
-
-
-#endregion
+    } // END GetRowingLeaderboardData
 
 
-        #region GET ROWING LEADERBOARD ENTRIES
+    #endregion
 
 
-        //----------------------------//
-        public async void GetRowingLeaderboardEntries(string _name = null, string _score = null)
+    #region GET ROWING LEADERBOARD ENTRIES
+
+
+    //----------------------------//
+    public async void GetRowingLeaderboardEntries(string _name = null, string _score = null)
         //----------------------------//
         {
             Debug.Log("UserDataManager.cs // GetRowingLeaderboardEntries() // ");
@@ -1100,7 +1099,6 @@ using maxprofitness.shared;
         private static void ReadRowingDocument(DocumentSnapshot _document)
         //--------------------------------------------------//
         {
-#if ROWING_CANOE
         Dictionary<string, object> _rowingDataDictionary = _document.ToDictionary();
 
         GameMetrics.RowingCanoeGameMetrics _rowingMetrics = new GameMetrics.RowingCanoeGameMetrics();
@@ -1161,7 +1159,7 @@ using maxprofitness.shared;
         }
 
         CompareRowingData(RowingTrackManager.GetRowingMetricsFromJson(), rowingCanoeLoadedData);
-#endif
+
         } // END ReadRowingDocument
 
 
@@ -1636,7 +1634,7 @@ using maxprofitness.shared;
         //--------------------------------------------------------//
         {
             Debug.Log("UserDataManager CompareRowingData.cs // Comparing Data to see if we should update");
-#if ROWING_CANOE
+
         bool hasNewValuesToUpload = false;
         //UpdateRowingMetrics();
         //UserDataManager.Instance.localLeaderboard.UpdateCanoeToFirebase();
@@ -1682,8 +1680,8 @@ using maxprofitness.shared;
             rowingCanoeLoadedData.leaderboardScore = _localJsonMetrics.leaderboardScore;
 
         } // END UpdateRowingMetrics
-#endif
-        } // END CompareRowingData
+
+    } // END CompareRowingData
 
 
         #endregion
@@ -1821,7 +1819,6 @@ using maxprofitness.shared;
         public void RecieveRowingData()
         //-------------------------------------//
         {
-#if ROWING_CANOE
         if (rowingCanoeLoadedData == null)
         {
             // Grab User Data
@@ -1838,8 +1835,8 @@ using maxprofitness.shared;
             CompareRowingData(RowingTrackManager.GetRowingMetricsFromJson(), rowingCanoeLoadedData);
             Debug.Log("UserDataManager.cs // SetRowingData() // we already have loaded data.  Comparing Data");
         }
-#endif
-        } // END ReceiveRowingData
+
+    } // END ReceiveRowingData
 
 
         #endregion
@@ -1937,7 +1934,6 @@ using maxprofitness.shared;
         //---------------------------------//
         {
             Debug.Log("UserDataManager.cs // UploadRowingDocument() //  Starting upload");
-#if ROWING_CANOE
 
         Dictionary<string, object> _rowingData = new Dictionary<string, object>
         { 
@@ -1968,7 +1964,7 @@ using maxprofitness.shared;
             {
                 Debug.LogError("UserData//InitializeUserData// error " + error);
             });
-#endif
+
         } // END UploadRowingDocument
 
 

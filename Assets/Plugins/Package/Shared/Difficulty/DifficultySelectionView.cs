@@ -5,14 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine;
 
-#if MAXPRO_LOGIN
-using maxprofitness.login;
-#endif
-
-#if ROWING
-using maxprofitness.rowing;
-#endif
-
 namespace maxprofitness.shared
 {
     /// <summary>
@@ -424,12 +416,12 @@ namespace maxprofitness.shared
                 rowingTrackManager = FindObjectOfType<RowingTrackManager>();
             }
             
-#if ROWING
             SoundManager.PlaySound(SharedGameSound.APP_UI_BUTTON_CLICK);
             
             CanvasController controller = FindObjectOfType<CanvasController>();
             controller?.CheckMaxProConnection();
 
+#if FIT_FIGHTER
             if (MaxProConnectionCanvas.isConnected == true && fitFighterManager == null)
             {
                 ForceHide();
